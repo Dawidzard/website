@@ -2,86 +2,94 @@
    DESIGN TOKENS
    Every value the site uses lives here. Change a token -> whole site changes.
    Nothing in this file styles an element; it only declares named values.
+
+   The site commits to ONE look: warm dark mocha, cream text, monochromatic
+   ASCII illustrations. There is deliberately no light theme.
    ========================================================================== */
 
 :root {
+  color-scheme: dark; /* makes scrollbars + form controls match the page */
+
   /* --- Typefaces ---------------------------------------------------------
-     Each stack ends in a generic family so the page still works if a
-     webfont fails to load. */
-  --font-serif: "Spectral", Georgia, "Times New Roman", serif;
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+     Two families only. Mono is not decoration here: it is the identity,
+     because ASCII art requires a fixed character grid. */
   --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* --- Type scale --------------------------------------------------------
-     Ratio ~1.25 (major third). clamp(min, preferred, max) makes the big
-     sizes shrink on phones without a single media query.
-     1rem = 16px by default. */
-  --text-xs:   0.75rem;   /* 12px - labels, metadata */
-  --text-sm:   0.875rem;  /* 14px - captions */
-  --text-base: 1.0625rem; /* 17px - body prose, slightly larger for serif */
-  --text-lg:   1.25rem;   /* 20px - lead paragraph */
-  --text-xl:   clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);  /* section titles */
-  --text-2xl:  clamp(2rem, 1.4rem + 2.6vw, 3.25rem);     /* page title */
+     clamp(min, preferred, max): the big sizes shrink on phones with no
+     media query at all. 1rem = 16px. */
+  --text-xs:   0.75rem;    /* 12px - eyebrow labels, metadata */
+  --text-sm:   0.8125rem;  /* 13px - captions, nav */
+  --text-base: 1rem;       /* 16px - body prose */
+  --text-lg:   1.125rem;   /* 18px - lead paragraph */
+  --text-xl:   clamp(1.375rem, 1.1rem + 1.1vw, 1.75rem);   /* section titles */
+  --text-2xl:  clamp(1.875rem, 1.3rem + 2.4vw, 2.75rem);   /* big statement */
+  --text-display: clamp(2.5rem, 1.4rem + 5vw, 5rem);       /* hero, stacked */
 
-  --leading-tight: 1.2;   /* headings */
-  --leading-normal: 1.65; /* prose - generous, serif needs air */
+  --leading-tight: 1.1;    /* large headings */
+  --leading-snug: 1.35;    /* medium headings */
+  --leading-normal: 1.7;   /* prose - generous, this is a reading site */
+
+  --track-tight: -0.02em;  /* big type needs negative tracking */
+  --track-wide: 0.14em;    /* small-caps eyebrow labels need the opposite */
 
   /* --- Spacing scale -----------------------------------------------------
-     Multiples of 4px. Using a scale instead of arbitrary numbers is what
-     makes a layout feel deliberate rather than nudged into place. */
-  --space-1: 0.25rem;  /*  4px */
-  --space-2: 0.5rem;   /*  8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-12: 3rem;    /* 48px */
-  --space-16: 4rem;    /* 64px */
-  --space-24: 6rem;    /* 96px */
+     Multiples of 4px. A scale instead of arbitrary numbers is what makes a
+     layout feel deliberate rather than nudged into place. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-32: 8rem;   /* between major sections - runhoid-level breathing room */
 
   /* --- Layout ------------------------------------------------------------ */
-  --measure: 68ch;     /* max line length for readable prose */
-  --page-width: 1100px;
+  --measure: 62ch;        /* max line length for readable prose */
+  --page-width: 1080px;   /* the single content column */
+  --page-narrow: 680px;   /* for prose-only blocks */
   --page-gutter: var(--space-6);
 
   --radius-sm: 2px;
   --radius-md: 4px;
 
-  /* --- Colour: LIGHT theme (the default) ---------------------------------
-     Named by ROLE (surface, ink, rule) not by appearance (white, black).
-     That is why the dark theme below only has to redefine these same names. */
-  --c-bg:        #faf9f6;  /* paper */
-  --c-surface:   #ffffff;  /* raised blocks: infobox, cards */
-  --c-ink:       #16161a;  /* body text */
-  --c-ink-muted: #5c5c66;  /* metadata, captions */
-  --c-rule:      #d9d6cd;  /* hairlines under headings, borders */
-  --c-accent:    #9c3316;  /* vermilion - links, active nav */
-  --c-accent-soft: #f3e6e1; /* accent tint for backgrounds */
-}
+  /* --- Colour: mocha -----------------------------------------------------
+     Named by ROLE (bg, ink, rule) not by appearance (brown, cream), so a
+     future palette change never leaves a token named --c-cream holding a
+     dark value. */
+  --c-bg:        #161210;  /* deep roasted mocha - the page */
+  --c-bg-deep:   #0e0b09;  /* behind the page: overlay scrim base */
+  --c-surface:   #1e1815;  /* raised: project blocks, CV infobox */
+  --c-surface-2: #272019;  /* raised twice: hover, inset panels */
 
-/* --- Colour: DARK theme ---------------------------------------------------
-   Two selectors on purpose:
-   1) the media query = follow the OS setting automatically
-   2) [data-theme="dark"] = a manual toggle we will add later
-   The :not() guard lets an explicit "light" choice win over the OS. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --c-bg:        #111113;
-    --c-surface:   #1a1a1e;
-    --c-ink:       #e8e6e1;
-    --c-ink-muted: #9a978f;
-    --c-rule:      #32323a;
-    --c-accent:    #e0784f;
-    --c-accent-soft: #2a1d18;
-  }
-}
+  --c-ink:       #ece3d6;  /* cream - primary text   ~13.5:1 on --c-bg */
+  --c-ink-muted: #a4927f;  /* coffee - secondary      ~6.3:1 */
+  --c-ink-faint: #6d5f52;  /* tertiary, dim ASCII     ~3.1:1 (non-text only) */
 
-:root[data-theme="dark"] {
-  --c-bg:        #111113;
-  --c-surface:   #1a1a1e;
-  --c-ink:       #e8e6e1;
-  --c-ink-muted: #9a978f;
-  --c-rule:      #32323a;
-  --c-accent:    #e0784f;
-  --c-accent-soft: #2a1d18;
+  --c-rule:      #342b24;  /* hairlines, borders */
+  --c-accent:    #d9a373;  /* caramel - links, active state */
+  --c-accent-dim: #8a6a4c; /* accent at rest / underlines */
+
+  /* --- ASCII art ---------------------------------------------------------
+     Three brightness steps let an illustration read as a monochromatic
+     image rather than flat text, and give the noise->form animation
+     something to interpolate between. */
+  --c-ascii-bright: var(--c-ink);
+  --c-ascii:        var(--c-ink-muted);
+  --c-ascii-dim:    var(--c-ink-faint);
+
+  /* ASCII art is a character GRID. line-height must be exactly 1 or the
+     rows drift apart and the picture shears. */
+  --ascii-leading: 1;
+  --ascii-tracking: 0;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur-med: 320ms;
+  --dur-slow: 900ms;
 }

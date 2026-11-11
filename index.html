@@ -4,67 +4,105 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>PLACEHOLDER NAME — Software Developer</title>
-  <meta name="description" content="Portfolio of PLACEHOLDER NAME: projects, writing and CV.">
+  <title>David Marković — Software Engineering</title>
+  <meta name="description" content="David Marković: software engineering student at ETF Belgrade, working at the boundary between machine learning and the systems that run it.">
 
-  <!-- Webfonts. preconnect opens the TCP+TLS connection early so the font
-       request does not wait for DNS; display=swap paints text immediately in
-       the fallback font instead of leaving a blank page. -->
+  <!-- preconnect opens the TCP+TLS handshake early so the font request does
+       not wait on DNS; display=swap paints text in the fallback immediately
+       instead of leaving a blank page. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- Order matters: tokens declare the variables that base.css consumes. -->
+  <!-- Order matters: tokens declares the variables the other two consume. -->
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
 </head>
 
 <body>
-  <!-- Lets a keyboard user jump past the nav. First focusable thing on the
-       page by convention. -->
   <a class="skip-link visually-hidden" href="#main">Skip to content</a>
 
-  <!-- <header> = banner landmark. <nav> inside it = the site navigation. -->
   <header class="site-header">
-    <div class="page">
-      <a class="site-header__name" href="/">PLACEHOLDER NAME</a>
+    <div class="page site-header__inner">
+      <a class="site-header__name" href="/">David Marković</a>
       <nav class="site-nav" aria-label="Main">
-        <a href="#about">About</a>
         <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-        <a href="cv.html">CV</a>
+        <a href="#exploring">Exploring</a>
+        <a href="#elsewhere">Elsewhere</a>
       </nav>
     </div>
   </header>
 
-  <!-- <main> = the one unique-to-this-page region. Exactly one per document. -->
   <main id="main">
 
-    <!-- TODO(increment 2): the hero / lede -->
-    <section class="section" id="intro">
+    <section class="hero">
       <div class="page">
-        <h1>Placeholder heading</h1>
+
+        <!-- The ASCII portrait. aria-hidden because a screen reader reading
+             out 4000 punctuation marks is hostile; the alternative text sits
+             in the <figcaption>. -->
+        <figure>
+          <div class="ascii-frame">
+<pre class="ascii" aria-hidden="true">
++--------------------------------------------------------------+
+|                                                              |
+|              [  A S C I I   P O R T R A I T  ]               |
+|                                                              |
+|        pending: supply a photograph and this becomes         |
+|        a character-density render of the actual image        |
+|                                                              |
++--------------------------------------------------------------+
+</pre>
+          </div>
+          <figcaption class="visually-hidden">
+            An ASCII-art portrait of David Marković.
+          </figcaption>
+        </figure>
+
+        <h1 class="hero__name">David Marković</h1>
+
+        <p class="hero__lead">
+          Software engineering student at ETF Belgrade, working at the
+          boundary between <strong>machine learning and the systems that
+          run it</strong>.
+        </p>
+
+        <div class="hero__actions">
+          <!-- A <button>, not a link: it opens a dialog on this page rather
+               than navigating anywhere. -->
+          <button class="btn" type="button" data-open-cv>A little about me</button>
+          <div class="link-row">
+            <a href="https://github.com/Dawidzard">GitHub</a>
+            <a href="https://www.youtube.com/@itsZhiwy">YouTube</a>
+            <a href="https://www.linkedin.com/in/david-markovic-3a107a309/">LinkedIn</a>
+          </div>
+        </div>
+
       </div>
     </section>
 
-    <!-- TODO(increment 3): prose + skills -->
-    <section class="section" id="about">
-      <div class="page">
-        <h2>About</h2>
-      </div>
-    </section>
-
-    <!-- TODO(increment 4): project entries, rendered from a data file -->
+    <!-- TODO(increment 4): project entries, each with its own ASCII figure -->
     <section class="section" id="projects">
       <div class="page">
+        <p class="eyebrow">01 &nbsp;/&nbsp; Selected work</p>
         <h2>Projects</h2>
       </div>
     </section>
 
-    <!-- TODO(increment 5): contact + links -->
-    <section class="section" id="contact">
+    <!-- TODO(increment 5): compact changelog of active learning -->
+    <section class="section" id="exploring">
       <div class="page">
-        <h2>Contact</h2>
+        <p class="eyebrow">02 &nbsp;/&nbsp; In progress</p>
+        <h2>Currently exploring</h2>
+      </div>
+    </section>
+
+    <!-- TODO(increment 6): astronomy, music, making, chess, diving, training -->
+    <section class="section" id="elsewhere">
+      <div class="page">
+        <p class="eyebrow">03 &nbsp;/&nbsp; Away from the keyboard</p>
+        <h2>Elsewhere</h2>
       </div>
     </section>
 
@@ -72,7 +110,7 @@
 
   <footer class="site-footer">
     <div class="page">
-      <p>© <span id="year">2026</span> PLACEHOLDER NAME</p>
+      <p>Belgrade, Serbia &nbsp;·&nbsp; <span id="year">2026</span></p>
     </div>
   </footer>
 </body>

@@ -23,7 +23,7 @@ html {
 body {
   background: var(--c-bg);
   color: var(--c-ink);
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
@@ -39,13 +39,13 @@ img, svg, video {
 /* --- Headings ------------------------------------------------------------- */
 
 h1, h2, h3, h4 {
-  font-family: var(--font-serif);
-  font-weight: 600;
+  font-family: var(--font-sans);
+  font-weight: 500;
   line-height: var(--leading-tight);
   text-wrap: balance; /* avoids one lonely word on the last line */
 }
 
-h1 { font-size: var(--text-2xl); letter-spacing: -0.02em; }
+h1 { font-size: var(--text-2xl); letter-spacing: var(--track-tight); }
 h2 { font-size: var(--text-xl); }
 h3 { font-size: var(--text-lg); }
 
