@@ -188,3 +188,26 @@
 .ascii.is-forming {
   color: var(--c-ascii-dim);
 }
+
+/* --- Portrait sizing -----------------------------------------------------
+   ASCII cannot reflow, so instead of letting it overflow we solve for the
+   font size that makes the grid exactly fill the column:
+
+       grid width = columns * 0.6em      (0.6 = JetBrains Mono advance)
+       => font-size = available width / (columns * 0.6)
+
+   150 columns needs 90em, 84 columns needs 50.4em. Two renders rather than
+   one, because 150 columns on a phone would shrink to an illegible 2px. */
+.ascii--wide {
+  font-size: calc(min(var(--page-width), 100vw - 3rem) / 90);
+}
+
+.ascii--narrow {
+  display: none;
+  font-size: calc(min(var(--page-width), 100vw - 3rem) / 50.4);
+}
+
+@media (max-width: 760px) {
+  .ascii--wide { display: none; }
+  .ascii--narrow { display: block; }
+}
