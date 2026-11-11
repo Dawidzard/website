@@ -1,0 +1,87 @@
+/* ==========================================================================
+   DESIGN TOKENS
+   Every value the site uses lives here. Change a token -> whole site changes.
+   Nothing in this file styles an element; it only declares named values.
+   ========================================================================== */
+
+:root {
+  /* --- Typefaces ---------------------------------------------------------
+     Each stack ends in a generic family so the page still works if a
+     webfont fails to load. */
+  --font-serif: "Spectral", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+
+  /* --- Type scale --------------------------------------------------------
+     Ratio ~1.25 (major third). clamp(min, preferred, max) makes the big
+     sizes shrink on phones without a single media query.
+     1rem = 16px by default. */
+  --text-xs:   0.75rem;   /* 12px - labels, metadata */
+  --text-sm:   0.875rem;  /* 14px - captions */
+  --text-base: 1.0625rem; /* 17px - body prose, slightly larger for serif */
+  --text-lg:   1.25rem;   /* 20px - lead paragraph */
+  --text-xl:   clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);  /* section titles */
+  --text-2xl:  clamp(2rem, 1.4rem + 2.6vw, 3.25rem);     /* page title */
+
+  --leading-tight: 1.2;   /* headings */
+  --leading-normal: 1.65; /* prose - generous, serif needs air */
+
+  /* --- Spacing scale -----------------------------------------------------
+     Multiples of 4px. Using a scale instead of arbitrary numbers is what
+     makes a layout feel deliberate rather than nudged into place. */
+  --space-1: 0.25rem;  /*  4px */
+  --space-2: 0.5rem;   /*  8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-24: 6rem;    /* 96px */
+
+  /* --- Layout ------------------------------------------------------------ */
+  --measure: 68ch;     /* max line length for readable prose */
+  --page-width: 1100px;
+  --page-gutter: var(--space-6);
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* --- Colour: LIGHT theme (the default) ---------------------------------
+     Named by ROLE (surface, ink, rule) not by appearance (white, black).
+     That is why the dark theme below only has to redefine these same names. */
+  --c-bg:        #faf9f6;  /* paper */
+  --c-surface:   #ffffff;  /* raised blocks: infobox, cards */
+  --c-ink:       #16161a;  /* body text */
+  --c-ink-muted: #5c5c66;  /* metadata, captions */
+  --c-rule:      #d9d6cd;  /* hairlines under headings, borders */
+  --c-accent:    #9c3316;  /* vermilion - links, active nav */
+  --c-accent-soft: #f3e6e1; /* accent tint for backgrounds */
+}
+
+/* --- Colour: DARK theme ---------------------------------------------------
+   Two selectors on purpose:
+   1) the media query = follow the OS setting automatically
+   2) [data-theme="dark"] = a manual toggle we will add later
+   The :not() guard lets an explicit "light" choice win over the OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --c-bg:        #111113;
+    --c-surface:   #1a1a1e;
+    --c-ink:       #e8e6e1;
+    --c-ink-muted: #9a978f;
+    --c-rule:      #32323a;
+    --c-accent:    #e0784f;
+    --c-accent-soft: #2a1d18;
+  }
+}
+
+:root[data-theme="dark"] {
+  --c-bg:        #111113;
+  --c-surface:   #1a1a1e;
+  --c-ink:       #e8e6e1;
+  --c-ink-muted: #9a978f;
+  --c-rule:      #32323a;
+  --c-accent:    #e0784f;
+  --c-accent-soft: #2a1d18;
+}

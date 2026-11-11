@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PLACEHOLDER NAME — Software Developer</title>
+  <meta name="description" content="Portfolio of PLACEHOLDER NAME: projects, writing and CV.">
+
+  <!-- Webfonts. preconnect opens the TCP+TLS connection early so the font
+       request does not wait for DNS; display=swap paints text immediately in
+       the fallback font instead of leaving a blank page. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <!-- Order matters: tokens declare the variables that base.css consumes. -->
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+</head>
+
+<body>
+  <!-- Lets a keyboard user jump past the nav. First focusable thing on the
+       page by convention. -->
+  <a class="skip-link visually-hidden" href="#main">Skip to content</a>
+
+  <!-- <header> = banner landmark. <nav> inside it = the site navigation. -->
+  <header class="site-header">
+    <div class="page">
+      <a class="site-header__name" href="/">PLACEHOLDER NAME</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+        <a href="cv.html">CV</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- <main> = the one unique-to-this-page region. Exactly one per document. -->
+  <main id="main">
+
+    <!-- TODO(increment 2): the hero / lede -->
+    <section class="section" id="intro">
+      <div class="page">
+        <h1>Placeholder heading</h1>
+      </div>
+    </section>
+
+    <!-- TODO(increment 3): prose + skills -->
+    <section class="section" id="about">
+      <div class="page">
+        <h2>About</h2>
+      </div>
+    </section>
+
+    <!-- TODO(increment 4): project entries, rendered from a data file -->
+    <section class="section" id="projects">
+      <div class="page">
+        <h2>Projects</h2>
+      </div>
+    </section>
+
+    <!-- TODO(increment 5): contact + links -->
+    <section class="section" id="contact">
+      <div class="page">
+        <h2>Contact</h2>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="page">
+      <p>© <span id="year">2026</span> PLACEHOLDER NAME</p>
+    </div>
+  </footer>
+</body>
+</html>
