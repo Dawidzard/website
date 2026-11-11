@@ -1083,3 +1083,42 @@ body.is-locked { overflow: hidden; }
 
 /* The counters sit under the request, separated from it by the rule above. */
 .vx-facts { min-width: 0; }
+
+/* --- Entry lists: Exploring, Elsewhere, Not built yet --------------------
+   The same shape as the CV's work list, because they answer the same kind
+   of question: what is this, and how finished is it. */
+.entry-list { margin: 0; max-width: none; }
+
+.entry-list dt {
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-rule);
+  font-size: var(--text-lg);
+  font-weight: 500;
+}
+
+.entry-list dd {
+  margin: var(--space-3) 0 0;
+  max-width: var(--measure);
+  color: var(--c-ink-muted);
+}
+
+.entry-list dd strong { color: var(--c-ink); font-weight: 500; }
+
+/* How finished a thing is rides with its title. A reader should not have to
+   reach the end of a paragraph to find out that it has not happened. */
+.entry-tag {
+  margin-left: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+  white-space: nowrap;
+}
+
+.entry-tag--idea { color: var(--c-accent); border-color: var(--c-accent-dim); }
