@@ -872,3 +872,98 @@ body.is-locked { overflow: hidden; }
 .gx-controls { min-width: 0; }
 
 .gx-meter-wrap { margin-top: var(--space-8); }
+
+/* --- Scheduler demo ------------------------------------------------------ */
+.sc {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-md);
+  background: var(--c-bg);
+}
+
+.sc-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.sc-slice { min-width: 190px; }
+
+.sc-slice > span {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.sc-slice > span b { color: var(--c-accent); font-weight: 400; }
+.sc-slice input[type="range"] { width: 100%; accent-color: var(--c-accent); }
+
+.sc-buttons { display: flex; gap: var(--space-2); }
+.sc-buttons .btn { padding: var(--space-2) var(--space-4); }
+
+/* --- The timeline --------------------------------------------------------
+   One row per thread, one cell per tick. Monospace so the columns line up
+   as a grid without any layout work. */
+.sc-board { overflow-x: auto; }
+
+.sc-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+}
+
+.sc-name { width: 2.2em; color: var(--c-ink-muted); }
+.sc-name.sc-is-running { color: var(--c-accent); }
+.sc-name.sc-is-blocked { color: var(--c-ink-faint); }
+.sc-name.sc-is-done { color: var(--c-ink-faint); text-decoration: line-through; }
+
+.sc-track { white-space: pre; letter-spacing: 0.06em; }
+.sc-track i { font-style: normal; }
+
+.sc-state {
+  margin-left: auto;
+  padding-left: var(--space-4);
+  color: var(--c-ink-faint);
+  white-space: nowrap;
+}
+
+/* Running and holding-the-semaphore are deliberately different marks: the
+   question the demo answers is who is inside the critical section. */
+.sc-run { color: var(--c-ink-muted); }
+.sc-crit { color: var(--c-accent); }
+.sc-blocked { color: var(--c-accent); }
+.sc-waiting { color: var(--c-ink-faint); }
+.sc-queued { color: var(--c-rule); }
+.sc-idle { color: transparent; }
+
+.sc-key {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-ink-faint);
+}
+
+.sc-key i { font-style: normal; margin-right: 0.2em; }
+
+.sc-facts { margin-top: var(--space-6); }
+
+.sc-log {
+  margin: var(--space-4) 0 0;
+  min-height: 5.2em;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--c-ink-faint);
+  white-space: pre-wrap;
+}

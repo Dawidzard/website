@@ -1,7 +1,0 @@
-    admin ---- posts ----> assignment
-      |                        ^
-      | approves               | applies
-      v                        |
-    working group <-------- student
-      |
-      +--> chat channel   (socket.io, JWT, MySQL)

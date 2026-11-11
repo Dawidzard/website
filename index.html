@@ -352,29 +352,6 @@
             </div>
           </li>
 
-          <li class="card">
-            <div class="ascii-frame card__figure">
-<pre class="ascii ascii--card" aria-hidden="true" data-ascii-reveal data-duration="500" data-stagger="700">
-    admin ---- posts ----> assignment
-      |                        ^
-      | approves               | applies
-      v                        |
-    working group <-------- student
-      |
-      +--> chat channel   (socket.io, JWT, MySQL)
-</pre>
-            </div>
-            <div class="card__body">
-              <p class="eyebrow">Web &nbsp;/&nbsp; Full-stack</p>
-              <h3 class="card__title">BlokApp</h3>
-              <p class="card__desc">A platform for student working groups during the university blockades: structured channels, a verified membership hierarchy, and assignments students apply for.</p>
-              <div class="card__actions">
-                <button class="btn" type="button" data-overlay="p-blokapp">Details</button>
-                <span class="card__status">Completed</span>
-              </div>
-            </div>
-          </li>
-
         </ul>
       </div>
     </section>
@@ -585,6 +562,10 @@
           Coursework, not a production operating system: no virtual memory, no filesystem,
           and a single hart.
         </p>
+
+        <div class="overlay__actions">
+          <button class="btn btn--accent" type="button" data-overlay="demo-sched">Run the demo</button>
+        </div>
   </template>
 
   <template id="tpl-p-kvm">
@@ -652,40 +633,6 @@
         <div class="overlay__actions">
           <button class="btn btn--accent" type="button" data-overlay="demo-asm">Run the demo</button>
         </div>
-  </template>
-
-  <template id="tpl-p-blokapp">
-    <p class="eyebrow">Web &nbsp;/&nbsp; Full-stack</p>
-    <h3 id="ov-title">BlokApp</h3>
-    <p class="project__meta">React &nbsp;·&nbsp; Express &nbsp;·&nbsp; MySQL &nbsp;·&nbsp; Socket.IO</p>
-
-        <p>
-          During the student blockades, organisation ran on group chats that were never
-          built for it: no roles, no way to verify who belonged, and tasks that scrolled
-          away. BlokApp is the narrow tool that general-purpose chat is not.
-        </p>
-
-        <h4>What it does</h4>
-        <ul>
-          <li><strong>Working groups with real membership.</strong> Students apply to join,
-              fill in a form that helps place them, and an administrator approves &mdash;
-              so a channel's members are a known set rather than whoever had the link.</li>
-          <li><strong>Assignments.</strong> Administrators post tasks, students apply for
-              them, and what a student has taken on shows on their profile.</li>
-          <li><strong>Per-group chat channels</strong> in real time, visible only to the
-              members of that group.</li>
-        </ul>
-
-        <h4>Stack</h4>
-        <p>
-          A React front end against an Express API. Real-time channels over Socket.IO,
-          authentication with JSON Web Tokens and bcrypt-hashed passwords, and
-          <strong>MySQL</strong> for storage &mdash; a relational store, because the whole
-          design is groups, members, roles and assignments pointing at each other.
-        </p>
-    <div class="overlay__actions">
-      <div class="link-row"><a href="https://github.com/bonkooo/BlokApp">Repository</a></div>
-    </div>
   </template>
 
 
@@ -848,6 +795,58 @@ loop: add r1, r2
     </div>
   </template>
 
+
+  <template id="tpl-demo-sched">
+    <p class="eyebrow">Interactive &nbsp;/&nbsp; FCFS &middot; time slice &middot; semaphore</p>
+    <h3 id="ov-title">Three threads and one semaphore</h3>
+    <p class="project__meta">
+      The kernel&rsquo;s own scheduling rules, simulated here one tick at a time.
+      Not the kernel&rsquo;s code &mdash; its behaviour.
+    </p>
+    <p>
+      T1 and T2 both need the semaphore; T3 only computes. Watch what a blocking
+      wait does: the blocked thread <strong>leaves the ready queue altogether</strong>.
+      It is not skipped over each turn, it is simply not there until somebody
+      signals. That is the part reading the source does not show you.
+    </p>
+
+    <div class="sc">
+      <div class="sc-bar">
+        <label class="sc-slice">
+          <span>time slice <b data-sc-slice-label></b></span>
+          <input type="range" data-sc-slice min="1" max="6" step="1" value="2">
+        </label>
+        <div class="sc-buttons">
+          <button class="btn" type="button" data-sc="step">step</button>
+          <button class="btn" type="button" data-sc="run">run</button>
+          <button class="btn" type="button" data-sc="reset">reset</button>
+        </div>
+      </div>
+
+      <div class="sc-board" data-sc-board></div>
+
+      <p class="sc-key">
+        <i class="sc-run">&#9608;</i> running &nbsp;
+        <i class="sc-crit">&#9608;</i> holds the semaphore &nbsp;
+        <i class="sc-blocked">&times;</i> blocked here &nbsp;
+        <i class="sc-waiting">&middot;</i> off the queue, waiting &nbsp;
+        <i class="sc-queued">&#9472;</i> in the queue
+      </p>
+
+      <div class="sc-facts" data-sc-facts></div>
+      <pre class="sc-log" data-sc-log></pre>
+    </div>
+
+    <h4>Why the slice matters</h4>
+    <p>
+      Drag it to 1 and the threads interleave on every tick, at the cost of a
+      context switch each time. Drag it to 6 and a thread holds the processor
+      until it blocks or finishes. The kernel&rsquo;s scheduler is first come,
+      first served, so the slice is the only thing standing between one
+      long-running thread and everything else waiting on it.
+    </p>
+  </template>
+
   <template id="tpl-cv">
     <article class="wiki">
 
@@ -984,13 +983,6 @@ loop: add r1, r2
           A minimal hypervisor built on Linux KVM: guest setup, hardware-assisted
           virtualisation, and the host&ndash;guest boundary.
         </dd>
-
-        <dt>BlokApp <span class="cv-tag">Completed</span></dt>
-        <dd>
-          A web application for student working groups: structured group chat, a
-          membership hierarchy with administrator approval, and an assignment
-          system. React, Express, Socket.IO and MySQL.
-        </dd>
       </dl>
 
       <h4 id="cv-focus" class="wiki__h">3 &nbsp; Technical focus</h4>
@@ -1026,5 +1018,7 @@ loop: add r1, r2
   <script src="scripts/toolchain.js" defer></script>
   <script src="scripts/toolchain-ui.js" defer></script>
   <script src="scripts/galaxydemo.js" defer></script>
+  <script src="scripts/scheduler.js" defer></script>
+  <script src="scripts/scheduler-ui.js" defer></script>
 </body>
 </html>
