@@ -251,6 +251,122 @@
             </div>
           </li>
 
+          <li class="card">
+            <div class="ascii-frame card__figure">
+<pre class="ascii ascii--card" aria-hidden="true" data-ascii-reveal data-duration="500" data-stagger="700">
+   239,029 images  ->  CNN  ->  3 morphologies
+
+   elliptical  ###########################  F1 .82
+   barred      #######################      F1 .69
+
+   validation accuracy 75.10%   macro F1 73.62%
+</pre>
+            </div>
+            <div class="card__body">
+              <p class="eyebrow">Machine learning &nbsp;/&nbsp; Computer vision &nbsp;/&nbsp; Astronomy</p>
+              <h3 class="card__title">Galaxy Zoo 2 Morphology Classifier</h3>
+              <p class="card__desc">Sorting 239,029 telescope images into barred spiral, elliptical and spiral. 75.10% validation accuracy &mdash; and a per-class error pattern that points straight back at the input resolution.</p>
+              <div class="card__actions">
+                <button class="btn" type="button" data-overlay="p-galaxy">Details</button>
+                <span class="card__status">Completed</span>
+              </div>
+            </div>
+          </li>
+
+          <li class="card">
+            <div class="ascii-frame card__figure">
+<pre class="ascii ascii--card" aria-hidden="true" data-ascii-reveal data-duration="500" data-stagger="700">
+   user threads      thread_create . sem_wait
+   ----------------- ecall ------------------
+   syscalls   FCFS scheduler   semaphores
+              time slice       heap: first fit
+   ------- trap.S  /  context.S -------------
+   RISC-V supervisor   sstatus . sip . scause
+</pre>
+            </div>
+            <div class="card__body">
+              <p class="eyebrow">Systems &nbsp;/&nbsp; Operating systems &nbsp;/&nbsp; RISC-V</p>
+              <h3 class="card__title">RISC-V Kernel</h3>
+              <p class="card__desc">A small preemptive kernel: threads on time slices, semaphores, a coalescing allocator, and a system-call boundary crossed by a single instruction.</p>
+              <div class="card__actions">
+                <button class="btn" type="button" data-overlay="p-kernel">Details</button>
+                <span class="card__status">Coursework</span>
+              </div>
+            </div>
+          </li>
+
+          <li class="card">
+            <div class="ascii-frame card__figure">
+<pre class="ascii ascii--card" aria-hidden="true" data-ascii-reveal data-duration="500" data-stagger="700">
+   +----------- guest (guest.ld) ------------+
+   |   open  read  write  lseek   |  out b   |
+   +---------------|--------------|----------+
+                   | vm exit      | port I/O
+   +---------------v--------------v----------+
+   |  monitor:  /dev/kvm  ioctl  +  mmap run |
+   +------------------|----------------------+
+                      v
+                 host filesystem
+</pre>
+            </div>
+            <div class="card__body">
+              <p class="eyebrow">Systems &nbsp;/&nbsp; Virtualisation</p>
+              <h3 class="card__title">KVM Virtual Machine Monitor</h3>
+              <p class="card__desc">A minimal hypervisor on Linux KVM: a guest with its own linker script, port I/O trapped on exit, and guest file calls forwarded to the host.</p>
+              <div class="card__actions">
+                <button class="btn" type="button" data-overlay="p-kvm">Details</button>
+                <span class="card__status">Coursework</span>
+              </div>
+            </div>
+          </li>
+
+          <li class="card">
+            <div class="ascii-frame card__figure">
+<pre class="ascii ascii--card" aria-hidden="true" data-ascii-reveal data-duration="500" data-stagger="700">
+    .s        +-----------+       .o
+   source --->| assembler |---> object
+              +-----------+        |
+                                   v
+    run       +-----------+     +--------+
+   <----------| emulator  |<----| linker |
+              +-----------+     +--------+
+            decode & execute    relocate
+</pre>
+            </div>
+            <div class="card__body">
+              <p class="eyebrow">Systems &nbsp;/&nbsp; Toolchain</p>
+              <h3 class="card__title">Assembler, Linker and CPU Emulator</h3>
+              <p class="card__desc">The whole path from assembly text to a running program, built rather than assumed: assemble, resolve symbols, relocate, then decode and execute.</p>
+              <div class="card__actions">
+                <button class="btn" type="button" data-overlay="p-asm">Details</button>
+                <span class="card__status">Coursework</span>
+              </div>
+            </div>
+          </li>
+
+          <li class="card">
+            <div class="ascii-frame card__figure">
+<pre class="ascii ascii--card" aria-hidden="true" data-ascii-reveal data-duration="500" data-stagger="700">
+    admin ---- posts ----> assignment
+      |                        ^
+      | approves               | applies
+      v                        |
+    working group <-------- student
+      |
+      +--> chat channel   (socket.io, JWT, MySQL)
+</pre>
+            </div>
+            <div class="card__body">
+              <p class="eyebrow">Web &nbsp;/&nbsp; Full-stack</p>
+              <h3 class="card__title">BlokApp</h3>
+              <p class="card__desc">A platform for student working groups during the university blockades: structured channels, a verified membership hierarchy, and assignments students apply for.</p>
+              <div class="card__actions">
+                <button class="btn" type="button" data-overlay="p-blokapp">Details</button>
+                <span class="card__status">Completed</span>
+              </div>
+            </div>
+          </li>
+
         </ul>
       </div>
     </section>
@@ -363,6 +479,197 @@
           <button class="btn" type="button" data-open-demo disabled>Run the demo&nbsp; (soon)</button>
           <div class="link-row"><a href="https://github.com/MihStev/PSIML">Repository</a></div>
         </div>
+  </template>
+
+
+  <template id="tpl-p-galaxy">
+    <p class="eyebrow">Machine learning &nbsp;/&nbsp; Computer vision &nbsp;/&nbsp; Astronomy</p>
+    <h3 id="ov-title">Galaxy Zoo 2 Morphology Classifier</h3>
+    <p class="project__meta">Neural Networks coursework &nbsp;·&nbsp; submitted as a pair</p>
+
+        <p>
+          Galaxy morphology is one of the few places where a classification label is a
+          genuine scientific statement rather than a convenience: whether a spiral has a
+          central bar bears on how it formed. The dataset is Galaxy Zoo 2, crowd-labelled
+          by volunteers, and the task is to recover those labels from the image alone.
+        </p>
+
+        <h4>Model</h4>
+        <p>
+          A convolutional network of seven layers across four blocks, with augmentation
+          and normalisation built into the model rather than the input pipeline. Inputs at
+          96&times;96, batch size 128, Adam at a learning rate of 0.001, sparse categorical
+          cross-entropy, 50 epochs with early stopping at patience 10, and 0.4 dropout in
+          the dense layers.
+        </p>
+
+        <h4>Result</h4>
+        <div class="table-scroll">
+          <table class="measure-table">
+            <tbody>
+              <tr><th>Validation accuracy</th><td><b>75.10%</b></td><td class="note">80/20 split of 239,029 images</td></tr>
+              <tr><th>Macro F1</th><td><b>73.62%</b></td><td class="note">precision 73.97%, recall 73.91%</td></tr>
+              <tr><th>Best class</th><td>Elliptical, F1 0.82</td><td class="note">the most distinct silhouette</td></tr>
+              <tr><th>Worst class</th><td>Barred, F1 0.69</td><td class="note">see below</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>What the errors mean</h4>
+        <p>
+          Barred spirals are the hardest class, and the report attributes that to two
+          things: the bar is a fine central structure that largely does not survive the
+          downsample to 96&times;96, and the classes are imbalanced. That is a more useful
+          finding than the headline accuracy, because it says the ceiling here is set by
+          input resolution rather than by model capacity.
+        </p>
+
+        <h4>My part</h4>
+        <p>
+          Submitted as a pair for the Neural Networks course. I built the classifier end
+          to end: dataset preparation, architecture, training and evaluation.
+        </p>
+    <div class="overlay__actions">
+      <div class="link-row"><a href="https://github.com/AleksaMikic/galaxy-cnn">Repository</a></div>
+    </div>
+  </template>
+
+  <template id="tpl-p-kernel">
+    <p class="eyebrow">Systems &nbsp;/&nbsp; Operating systems &nbsp;/&nbsp; RISC-V</p>
+    <h3 id="ov-title">RISC-V Kernel</h3>
+    <p class="project__meta">Operating Systems 1 &nbsp;·&nbsp; C++ and RISC-V assembly</p>
+
+        <p>
+          The interesting part of a kernel is not any one feature but the boundary: what
+          happens in the instructions between a user thread asking for something and the
+          kernel being in a position to answer. This one makes that crossing explicit.
+        </p>
+
+        <h4>What is in it</h4>
+        <ul>
+          <li><strong>Threads and scheduling.</strong> Each thread carries a control block
+              and a time slice; the scheduler is FCFS over a ready queue, so a thread runs
+              until it blocks, yields, or its slice expires.</li>
+          <li><strong>Semaphores</strong> for blocking synchronisation, with waiting
+              threads parked off the ready queue rather than spinning.</li>
+          <li><strong>A memory allocator</strong> over a free list of block-sized segments:
+              first fit on allocation, and adjacent free segments coalesced on release so
+              the list does not fragment into unusable crumbs.</li>
+          <li><strong>A system-call layer</strong> reached by <code>ecall</code>, exposed
+              both as a C interface and as C++ wrappers over it.</li>
+          <li><strong>Context switching and trap handling in assembly</strong>, plus a
+              console driver.</li>
+        </ul>
+
+        <h4>The machine underneath</h4>
+        <p>
+          Everything runs in RISC-V supervisor mode, which means the kernel manipulates
+          the architectural control registers directly &mdash; the status register to mask
+          and unmask interrupts and to decide what privilege an <code>sret</code> returns
+          to, the pending register to clear a software interrupt, and the cause register
+          to tell a system call apart from a timer tick.
+        </p>
+        <p class="project__meta">
+          Coursework, not a production operating system: no virtual memory, no filesystem,
+          and a single hart.
+        </p>
+  </template>
+
+  <template id="tpl-p-kvm">
+    <p class="eyebrow">Systems &nbsp;/&nbsp; Virtualisation</p>
+    <h3 id="ov-title">KVM Virtual Machine Monitor</h3>
+    <p class="project__meta">Virtual Machines &nbsp;·&nbsp; C, Linux KVM API</p>
+
+        <p>
+          A hypervisor built this way is a short program, and that is the point: the
+          hardware does the virtualisation, and the monitor's job is to set up the
+          machine, hand control to it, and decide what to do each time the guest falls
+          back out.
+        </p>
+
+        <h4>Bringing a machine up</h4>
+        <p>
+          The monitor opens <code>/dev/kvm</code>, checks the API version against the
+          headers it was compiled with, creates a VM and a virtual CPU, registers a region
+          of its own address space as the guest's physical memory, and maps the shared
+          structure through which the kernel reports why the guest stopped. The guest is
+          built against its own linker script, so it is laid out to match the memory map
+          the monitor just described.
+        </p>
+
+        <h4>Crossing back out</h4>
+        <p>
+          Two kinds of exit matter here. Port I/O lets the guest emit output through what
+          looks to it like hardware. The later stage adds a file protocol: the guest calls
+          <code>open</code>, <code>read</code>, <code>write</code> and <code>lseek</code>,
+          those are marshalled into a request structure, and the monitor services them
+          against the host filesystem before resuming the guest. Several virtual CPUs run
+          as threads and share one output stream under a mutex.
+        </p>
+        <p class="project__meta">
+          Coursework. Not a production hypervisor, and deliberately narrow: no device
+          model beyond what the exercises needed.
+        </p>
+  </template>
+
+  <template id="tpl-p-asm">
+    <p class="eyebrow">Systems &nbsp;/&nbsp; Toolchain</p>
+    <h3 id="ov-title">Assembler, Linker and CPU Emulator</h3>
+    <p class="project__meta">Systems Software &nbsp;·&nbsp; C++</p>
+
+        <p>
+          Most of the time a toolchain is a black box: text goes in, a program comes out.
+          This project takes the box apart into its three stages and implements each one.
+        </p>
+        <ul>
+          <li><strong>Assembler.</strong> Assembly text to object code: instructions
+              encoded into their binary form, and every symbol either defined locally or
+              recorded as something the next stage has to find.</li>
+          <li><strong>Linker.</strong> Several object files into one image: sections placed
+              at addresses, symbol references resolved against definitions, and the
+              relocations applied that those placements imply.</li>
+          <li><strong>Emulator.</strong> The image executed instruction by instruction
+              &mdash; fetch, decode, execute &mdash; against a modelled register file and
+              memory.</li>
+        </ul>
+        <p>
+          Writing all three is what makes the addresses stop being arbitrary. A relocation
+          entry is abstract until you are the one who has to apply it.
+        </p>
+  </template>
+
+  <template id="tpl-p-blokapp">
+    <p class="eyebrow">Web &nbsp;/&nbsp; Full-stack</p>
+    <h3 id="ov-title">BlokApp</h3>
+    <p class="project__meta">React &nbsp;·&nbsp; Express &nbsp;·&nbsp; MySQL &nbsp;·&nbsp; Socket.IO</p>
+
+        <p>
+          During the student blockades, organisation ran on group chats that were never
+          built for it: no roles, no way to verify who belonged, and tasks that scrolled
+          away. BlokApp is the narrow tool that general-purpose chat is not.
+        </p>
+
+        <h4>What it does</h4>
+        <ul>
+          <li><strong>Working groups with real membership.</strong> Students apply to join,
+              fill in a form that helps place them, and an administrator approves &mdash;
+              so a channel's members are a known set rather than whoever had the link.</li>
+          <li><strong>Assignments.</strong> Administrators post tasks, students apply for
+              them, and what a student has taken on shows on their profile.</li>
+          <li><strong>Per-group chat channels</strong> in real time, visible only to the
+              members of that group.</li>
+        </ul>
+
+        <h4>Stack</h4>
+        <p>
+          A React front end against an Express API. Real-time channels over Socket.IO,
+          authentication with JSON Web Tokens and bcrypt-hashed passwords, and
+          <strong>MySQL</strong> for storage &mdash; a relational store, because the whole
+          design is groups, members, roles and assignments pointing at each other.
+        </p>
+    <div class="overlay__actions">
+      <div class="link-row"><a href="https://github.com/Dawidzard/BlokApp">Repository</a></div>
+    </div>
   </template>
 
   <template id="tpl-cv">
@@ -504,8 +811,9 @@
 
         <dt>BlokApp <span class="cv-tag">Completed</span></dt>
         <dd>
-          A MERN web application for student working groups: structured group chat, a
-          membership hierarchy and an assignment system.
+          A web application for student working groups: structured group chat, a
+          membership hierarchy with administrator approval, and an assignment
+          system. React, Express, Socket.IO and MySQL.
         </dd>
       </dl>
 

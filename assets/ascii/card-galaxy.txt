@@ -1,0 +1,6 @@
+   239,029 images  ->  CNN  ->  3 morphologies
+
+   elliptical  ###########################  F1 .82
+   barred      #######################      F1 .69
+
+   validation accuracy 75.10%   macro F1 73.62%

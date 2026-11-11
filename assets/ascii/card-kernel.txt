@@ -1,0 +1,6 @@
+   user threads      thread_create . sem_wait
+   ----------------- ecall ------------------
+   syscalls   FCFS scheduler   semaphores
+              time slice       heap: first fit
+   ------- trap.S  /  context.S -------------
+   RISC-V supervisor   sstatus . sip . scause

@@ -1,0 +1,8 @@
+    .s        +-----------+       .o
+   source --->| assembler |---> object
+              +-----------+        |
+                                   v
+    run       +-----------+     +--------+
+   <----------| emulator  |<----| linker |
+              +-----------+     +--------+
+            decode & execute    relocate

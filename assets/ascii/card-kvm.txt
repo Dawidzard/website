@@ -1,0 +1,9 @@
+   +----------- guest (guest.ld) ------------+
+   |   open  read  write  lseek   |  out b   |
+   +---------------|--------------|----------+
+                   | vm exit      | port I/O
+   +---------------v--------------v----------+
+   |  monitor:  /dev/kvm  ioctl  +  mmap run |
+   +------------------|----------------------+
+                      v
+                 host filesystem

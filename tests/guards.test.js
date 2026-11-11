@@ -87,9 +87,19 @@ function check(label, ok, detail) {
     const cols = Math.max(...art.replace(/\n$/, '').split('\n').map((l) => l.length));
     const want = +(cols * 0.6).toFixed(2);
     const got = divisors.get(cls);
+
+    // The divisor guarantees the drawing FITS, so the test is "must not
+    // exceed", not "must equal". Several project cards share .ascii--card
+    // and are naturally different widths; a figure narrower than the
+    // divisor simply leaves a little air, which is fine. A figure wider
+    // than it overflows the column, which is the bug.
     if (got === undefined) problems.push(`${cls}: no calc(100cqw / D) rule`);
-    else if (Math.abs(got - want) > 0.05) {
-      problems.push(`${cls}: art is ${cols} cols (needs /${want}) but CSS says /${got}`);
+    else if (want > got + 0.05) {
+      problems.push(`${cls}: art is ${cols} cols and needs /${want}, `
+                  + `but CSS says /${got} - it will overflow`);
+    } else if (want < got * 0.8) {
+      problems.push(`${cls}: art is ${cols} cols (/${want}) against a /${got} `
+                  + `rule - more than 20% of the column is left empty`);
     }
   }
 
@@ -134,7 +144,24 @@ function check(label, ok, detail) {
   }
 }
 
-/* 6. Tags balance. -------------------------------------------------------- */
+/* 6. Every overlay trigger has content to show. ---------------------------
+ * open() looks up `tpl-${key}` and returns quietly when it is missing, so a
+ * mistyped key is a button that does nothing at all: no error, no console
+ * message, nothing to notice in review. */
+{
+  const keys = [...html.matchAll(/data-overlay="([a-z0-9-]+)"/g)].map((m) => m[1]);
+  const templates = new Set(
+    [...html.matchAll(/<template id="tpl-([a-z0-9-]+)"/g)].map((m) => m[1]));
+  const dead = [...new Set(keys)].filter((k) => !templates.has(k));
+  check(`every overlay trigger resolves to a template (${keys.length} triggers)`,
+        dead.length === 0, `no template for: ${dead.join(', ')}`);
+
+  const unused = [...templates].filter((t) => !keys.includes(t));
+  check('no template is unreachable', unused.length === 0,
+        `nothing opens: ${unused.join(', ')}`);
+}
+
+/* 7. Tags balance. -------------------------------------------------------- */
 {
   const VOID = new Set(['meta', 'link', 'br', 'img', 'input', 'hr', 'source', 'wbr']);
   const stack = [];
