@@ -1,0 +1,29 @@
+{
+ "tokens": {
+  "--c-accent": "#e0a877",
+  "--c-accent-dim": "#9b7752",
+  "--c-bg": "#241a14",
+  "--c-bg-deep": "#150f0b",
+  "--c-ink": "#f0e7da",
+  "--c-ink-faint": "#7d6c5c",
+  "--c-ink-muted": "#b39e89",
+  "--c-rule": "#423225",
+  "--c-surface": "#2f2219",
+  "--c-surface-2": "#3a2b20"
+ },
+ "targets": {
+  "linkedin": [
+   1584,
+   396
+  ],
+  "youtube": [
+   2560,
+   1440
+  ],
+  "github": [
+   1280,
+   320
+  ]
+ },
+ "portrait": "portrait-64.txt"
+}
