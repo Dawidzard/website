@@ -3,9 +3,7 @@
    Everything here needs a class name. Bare-element defaults live in base.css.
    ========================================================================== */
 
-/* --- Skip link -----------------------------------------------------------
-   Visually hidden until focused, then it must become visible - otherwise a
-   keyboard user tabs onto something they cannot see. */
+/* --- Skip link ----------------------------------------------------------- */
 .skip-link:focus {
   position: fixed;
   top: var(--space-4);
@@ -15,24 +13,21 @@
   padding: var(--space-2) var(--space-4);
   background: var(--c-surface);
   border: 1px solid var(--c-accent);
-  z-index: 100;
+  z-index: 200;
 }
 
 /* --- Eyebrow label -------------------------------------------------------
-   Small mono uppercase caption. Used for section numbers ("01 / PROJECTS")
-   and metadata rows. This is the typographic signature of the whole site. */
+   Small mono uppercase caption: section numbers, project tags, metadata.
+   The typographic signature of the whole site. */
 .eyebrow {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: var(--track-wide);
   color: var(--c-ink-muted);
 }
 
-/* --- Site header ---------------------------------------------------------
-   Sticky and thin. The blur keeps the mocha readable when ASCII art scrolls
-   underneath it. */
+/* --- Site header --------------------------------------------------------- */
 .site-header {
   position: sticky;
   top: 0;
@@ -50,35 +45,36 @@
   padding-block: var(--space-4);
 }
 
-.site-header__name {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  letter-spacing: var(--track-wide);
-  text-transform: uppercase;
-  color: var(--c-ink);
-  text-decoration: none;
-}
-
-.site-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-6);
-}
-
+.site-header__name,
 .site-nav a {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  color: var(--c-ink-muted);
   text-decoration: none;
 }
 
-.site-nav a:hover,
-.site-nav a[aria-current="page"] { color: var(--c-accent); }
+.site-header__name {
+  color: var(--c-ink);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+}
 
-/* --- ASCII illustration --------------------------------------------------
-   A character grid, so: fixed font, line-height exactly 1, no wrapping.
-   The wrapper scrolls horizontally rather than letting the art reflow -
-   a wrapped ASCII drawing is destroyed, not merely squeezed. */
+.site-nav { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.site-nav a { color: var(--c-ink-muted); }
+.site-nav a:hover { color: var(--c-accent); }
+
+/* --- ASCII illustrations -------------------------------------------------
+   A character grid: fixed font, line-height exactly 1, never wrapped.
+
+   Sizing is SOLVED, not guessed. A drawing N columns wide occupies
+   N * 0.6em (0.6 is the JetBrains Mono advance), so the font size that makes
+   it exactly fill its container is:
+
+       font-size = container width / (N * 0.6)
+
+   Written with container query units, that is calc(100cqw / (N * 0.6)).
+   Because the art can then never be wider than its box, .ascii-frame needs
+   no horizontal scrolling -- which is why the scrollbar under the portrait
+   is gone. Overflow is hidden only as a backstop. */
 .ascii {
   font-family: var(--font-mono);
   line-height: var(--ascii-leading);
@@ -86,24 +82,27 @@
   white-space: pre;
   color: var(--c-ascii);
   margin: 0;
-  /* font-size drives the artwork's physical size: at 0.6rem a 70-column
-     drawing is ~420px wide. */
-  font-size: clamp(0.4rem, 0.18rem + 0.9vw, 0.7rem);
+  transition: color var(--dur-slow) var(--ease-out);
 }
+
+/* While still condensing out of noise the art sits at the dim step; removing
+   the class transitions it up, giving the reveal a brightness arc for the
+   cost of one transition. */
+.ascii.is-forming { color: var(--c-ascii-dim); }
 
 .ascii-frame {
-  overflow-x: auto;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
+  container-type: inline-size;
+  overflow: hidden;
 }
 
-/* --- Hero ----------------------------------------------------------------
-   Single centred column, runhoid-style: art, name, a statement broken into
-   deliberate lines, then actions. */
-.hero {
-  padding-block: var(--space-24) var(--space-32);
-  text-align: center;
+/* --- Hero ---------------------------------------------------------------- */
+.hero { padding-block: var(--space-24) var(--space-32); }
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: var(--space-16);
+  align-items: center;
 }
 
 .hero__name {
@@ -111,35 +110,50 @@
   font-weight: 500;
   letter-spacing: var(--track-tight);
   line-height: var(--leading-tight);
-  margin-top: var(--space-12);
+  margin-top: var(--space-4);
 }
 
-/* The statement. Each line is its own element so the breaks are intentional
-   at every width instead of wherever the browser happens to wrap. */
 .hero__lead {
-  margin: var(--space-8) auto 0;
-  max-width: 44ch;
-  font-size: var(--text-xl);
+  margin-top: var(--space-6);
+  max-width: 38ch;
+  font-size: var(--text-lg);
   line-height: var(--leading-snug);
   color: var(--c-ink-muted);
 }
 
-.hero__lead strong {
-  color: var(--c-ink);
-  font-weight: 500;
-}
+.hero__lead strong { color: var(--c-ink); font-weight: 500; }
 
 .hero__actions {
-  margin-top: var(--space-12);
+  margin-top: var(--space-8);
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   align-items: center;
-  gap: var(--space-3) var(--space-6);
+  gap: var(--space-4) var(--space-6);
 }
 
-/* --- Buttons & inline actions -------------------------------------------- */
+.hero__portrait { margin: 0; }
 
+/* 100 columns -> 60em. 64 columns -> 38.4em. */
+.ascii--portrait { font-size: calc(100cqw / 60); }
+.ascii--portrait-sm { display: none; font-size: calc(100cqw / 38.4); }
+
+@media (max-width: 860px) {
+  .hero__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
+  .hero__portrait { order: -1; max-width: 340px; }
+  .ascii--portrait { display: none; }
+  .ascii--portrait-sm { display: block; }
+}
+
+/* Grid items default to min-width:auto, meaning "never narrower than my
+   content". With white-space:pre content that is the full unwrapped width of
+   the drawing, so a grid item holding ASCII will push its track wider than
+   the page unless this is set. The minmax(0,...) tracks above guard the same
+   thing from the other side; both are needed in practice. */
+.hero__text,
+.card__figure,
+.card__body { min-width: 0; }
+
+/* --- Buttons ------------------------------------------------------------- */
 .btn {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -153,10 +167,9 @@
               color var(--dur-fast) var(--ease-out);
 }
 
-.btn:hover {
-  border-color: var(--c-accent);
-  color: var(--c-accent);
-}
+.btn:hover:not(:disabled) { border-color: var(--c-accent); color: var(--c-accent); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+.btn--accent { border-color: var(--c-accent-dim); color: var(--c-accent); }
 
 .link-row {
   display: flex;
@@ -168,81 +181,67 @@
 
 .link-row a { text-decoration-color: var(--c-accent-dim); }
 
-/* --- Footer -------------------------------------------------------------- */
-
-.site-footer {
-  border-top: 1px solid var(--c-rule);
-  padding-block: var(--space-8);
-  color: var(--c-ink-muted);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-}
-
-/* While the drawing is still condensing out of noise it sits at the dim step;
-   removing .is-forming transitions it up to full strength, which gives the
-   reveal a brightness arc for the cost of one CSS transition. */
-.ascii {
-  transition: color var(--dur-slow) var(--ease-out);
-}
-
-.ascii.is-forming {
-  color: var(--c-ascii-dim);
-}
-
-/* --- Portrait sizing -----------------------------------------------------
-   ASCII cannot reflow, so instead of letting it overflow we solve for the
-   font size that makes the grid exactly fill the column:
-
-       grid width = columns * 0.6em      (0.6 = JetBrains Mono advance)
-       => font-size = available width / (columns * 0.6)
-
-   150 columns needs 90em, 84 columns needs 50.4em. Two renders rather than
-   one, because 150 columns on a phone would shrink to an illegible 2px. */
-.ascii--wide {
-  font-size: calc(min(var(--page-width), 100vw - 3rem) / 90);
-}
-
-.ascii--narrow {
-  display: none;
-  font-size: calc(min(var(--page-width), 100vw - 3rem) / 50.4);
-}
-
-@media (max-width: 760px) {
-  .ascii--wide { display: none; }
-  .ascii--narrow { display: block; }
-}
-
-/* --- Project entries -----------------------------------------------------
-   Entries, not cards. A grid of equal tiles forces every project to look
-   equally important and pressures you into inventing filler to square it
-   off; a vertical list lets one project be three screens and another be
-   three lines. */
-.project {
-  padding-block: var(--space-16);
-  border-top: 1px solid var(--c-rule);
-}
-
-.project__figure {
-  margin: 0 0 var(--space-12);
-}
-
-.project__head {
+/* --- Section heads ------------------------------------------------------- */
+.section__head {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--space-3) var(--space-4);
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
 }
 
-.project__title {
-  font-size: var(--text-xl);
+.section__head h2 { border: 0; padding: 0; margin: 0; }
+
+.section__note {
+  font-size: var(--text-sm);
+  color: var(--c-ink-muted);
+  max-width: 48ch;
+}
+
+/* --- Project cards -------------------------------------------------------
+   Compact rows, not a tile grid and not an essay. The landing page lists the
+   work; the full write-up opens in the overlay. */
+.card-list { list-style: none; padding: 0; margin: 0; max-width: none; }
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr);
+  gap: var(--space-8);
+  align-items: center;
+  padding: var(--space-8);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-md);
+  background: var(--c-surface);
+}
+
+.card + .card { margin-top: var(--space-6); }
+
+/* The card figure is 50 columns -> 30em. */
+.ascii--card { font-size: calc(100cqw / 30); }
+
+.card__title {
+  margin-top: var(--space-2);
+  font-size: var(--text-lg);
   font-weight: 500;
-  letter-spacing: var(--track-tight);
 }
 
-/* Status is a required part of every entry: the difference between shipped,
-   experimental and abandoned is the first thing a reader needs and the last
-   thing a portfolio usually says. */
-.project__status {
+.card__desc {
+  margin-top: var(--space-3);
+  color: var(--c-ink-muted);
+  font-size: var(--text-base);
+}
+
+.card__actions {
+  margin-top: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Status is a required part of every entry: shipped, experimental or parked
+   is the first thing a reader needs and the last thing a portfolio says. */
+.card__status {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   text-transform: uppercase;
@@ -254,19 +253,86 @@
   white-space: nowrap;
 }
 
-.project__meta {
-  margin-top: var(--space-3);
+@media (max-width: 760px) {
+  .card { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --- Overlay -------------------------------------------------------------
+   One overlay element, reused for project detail, the CV and the demo. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.overlay__scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--c-bg-deep) 72%, transparent);
+  backdrop-filter: blur(7px);
+}
+
+.overlay__panel {
+  position: relative;
+  width: min(840px, 100%);
+  background: var(--c-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* The frame is drawn with characters, not with a CSS border. The font size
+   is fixed rather than inherited because the script divides the panel's
+   pixel size by the cell size to decide how many characters fit; an
+   inherited, document-dependent size would make that arithmetic guesswork.
+   Cell = 12px * 0.6 wide by 12px tall. */
+.overlay__border {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+  white-space: pre;
+  color: var(--c-accent-dim);
+  z-index: 2;
+}
+
+.overlay__close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-6);
+  z-index: 3;
   font-family: var(--font-mono);
   font-size: var(--text-xs);
+  letter-spacing: var(--track-wide);
   color: var(--c-ink-muted);
-  letter-spacing: 0.04em;
+  background: var(--c-surface);
+  border: 0;
+  padding: var(--space-2);
+  cursor: pointer;
 }
 
-.project__body {
-  margin-top: var(--space-8);
+.overlay__close:hover { color: var(--c-accent); }
+
+.overlay__content {
+  position: relative;
+  z-index: 1;
+  max-height: min(80vh, 760px);
+  overflow-y: auto;
+  padding: var(--space-12);
 }
 
-.project__body h4 {
+.overlay__content h3 {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  margin-top: var(--space-2);
+}
+
+.overlay__content h4 {
   margin-top: var(--space-8);
   margin-bottom: var(--space-3);
   font-family: var(--font-mono);
@@ -277,17 +343,35 @@
   color: var(--c-ink-muted);
 }
 
-.project__body ul {
-  padding-left: 1.1em;
+.overlay__content p { margin-top: var(--space-4); }
+.overlay__content ul { padding-left: 1.1em; margin-top: var(--space-2); }
+.overlay__content li { margin-top: var(--space-2); }
+
+.overlay__actions {
+  margin-top: var(--space-12);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
 }
 
-.project__body li { margin-top: var(--space-2); }
+.project__meta {
+  margin-top: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-ink-muted);
+  letter-spacing: 0.04em;
+  max-width: var(--measure);
+}
 
-/* --- Figures / measurements ---------------------------------------------- */
+/* Stop the page behind the overlay from scrolling under it. */
+body.is-locked { overflow: hidden; }
 
+/* --- Measurement tables --------------------------------------------------
+   A number without its conditions is a claim, not a measurement, so the
+   notes column is part of the table rather than a footnote. */
 .measure-table {
   width: 100%;
-  max-width: var(--measure);
   border-collapse: collapse;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -302,17 +386,9 @@
   vertical-align: baseline;
 }
 
-.measure-table th {
-  font-weight: 400;
-  color: var(--c-ink-muted);
-}
+.measure-table th { font-weight: 400; color: var(--c-ink-muted); }
+.measure-table td b { font-weight: 500; color: var(--c-ink); }
 
-.measure-table td b {
-  font-weight: 500;
-  color: var(--c-ink);
-}
-
-/* A number without its conditions is a claim, not a measurement. */
 .measure-table .note {
   color: var(--c-ink-muted);
   font-family: var(--font-sans);
@@ -321,9 +397,15 @@
 
 .table-scroll { overflow-x: auto; }
 
-/* Project figures are 80 columns: 80 * 0.6 = 48em. Same solve as the
-   portrait, so the drawing fills the column exactly instead of overflowing. */
-.ascii--figure {
-  font-size: calc(min(var(--page-width), 100vw - 3rem) / 48);
+/* --- Footer -------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--c-rule);
+  padding-block: var(--space-8);
   color: var(--c-ink-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
 }
+
+/* The overlay figure is 80 columns -> 48em. */
+.overlay__figure { margin-bottom: var(--space-8); }
+.ascii--figure { font-size: calc(100cqw / 48); }

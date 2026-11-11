@@ -40,7 +40,7 @@ def build_mask(rgb, bg=(255, 255, 255), tol=16):
 
 def to_ascii(path, width, ramp, char_aspect, gamma, invert, margin,
              keep_top=1.0, equalize=True, crop=None, sharpen=0.0, radius=1.6,
-             solid=False):
+             solid=False, despeckle=0, dissolve=0.0):
     im = Image.open(path).convert("RGB")
 
     # An explicit crop, in fractions of the image, beats auto-framing for a
@@ -86,6 +86,27 @@ def to_ascii(path, width, ramp, char_aspect, gamma, invert, margin,
 
     lum = np.asarray(grey, dtype=np.float64) / 255.0
     inside = np.asarray(sub, dtype=np.float64) / 255.0 > 0.5
+
+    # Despeckle. Wispy hair at the crown survives the downsample as isolated
+    # single cells, which read as dirt on the screen rather than as hair.
+    # Drop any subject cell with too few subject neighbours.
+    if despeckle > 0:
+        pad = np.pad(inside, 1, constant_values=False)
+        neighbours = sum(pad[i:i + inside.shape[0], j:j + inside.shape[1]]
+                         for i in range(3) for j in range(3)) - inside
+        inside &= neighbours >= despeckle
+
+    # Edge dissolve. A hard silhouette looks cut out with scissors; letting
+    # cells drop out with a probability that rises towards the boundary makes
+    # the portrait read as emerging from the page, and matches the way the
+    # reveal animation scatters.
+    if dissolve > 0:
+        pad = np.pad(inside, 1, constant_values=False)
+        neighbours = sum(pad[i:i + inside.shape[0], j:j + inside.shape[1]]
+                         for i in range(3) for j in range(3)) - inside
+        edge = (8 - neighbours) / 8.0            # 0 deep inside, 1 at the rim
+        rng = np.random.default_rng(7)           # fixed seed: reproducible art
+        inside &= rng.random(inside.shape) >= edge * dissolve
 
     # Normalise over the SUBJECT ONLY. Running autocontrast on the whole
     # frame lets the white background own the top of the histogram, which
@@ -147,6 +168,10 @@ def main():
     p.add_argument("--gamma", type=float, default=1.0,
                    help=">1 darkens midtones, <1 lifts them")
     p.add_argument("--invert", action="store_true")
+    p.add_argument("--despeckle", type=int, default=0,
+                   help="drop subject cells with fewer than N subject neighbours (0-8)")
+    p.add_argument("--dissolve", type=float, default=0.0,
+                   help="0-1; how strongly the silhouette edge scatters")
     p.add_argument("--solid", action="store_true",
                    help="treat the whole image as subject (no background to mask)")
     p.add_argument("--no-equalize", action="store_true",
@@ -164,7 +189,7 @@ def main():
     art = to_ascii(a.image, a.width, a.ramp, a.char_aspect, a.gamma,
                    a.invert, a.margin, a.keep_top, not a.no_equalize,
                    tuple(float(v) for v in a.crop.split(',')) if a.crop else None,
-                   a.sharpen, a.radius, a.solid)
+                   a.sharpen, a.radius, a.solid, a.despeckle, a.dissolve)
     sys.stdout.write(art + "\n")
 
 

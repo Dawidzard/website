@@ -104,13 +104,21 @@
     requestAnimationFrame(frame);
   }
 
-  function init() {
-    const blocks = document.querySelectorAll('[data-ascii-reveal]');
+  /**
+   * Attach to every unattached drawing inside `root`.
+   *
+   * Exported, because content cloned out of a <template> into the overlay
+   * never existed in the document when this script first ran. The overlay
+   * calls this after it inserts a panel so figures in there animate too.
+   */
+  function attach(root = document) {
+    const blocks = root.querySelectorAll('[data-ascii-reveal]:not([data-ascii-done])');
     if (!blocks.length) return;
 
     if (prefersReducedMotion) return; // leave the static art exactly as authored
 
     blocks.forEach((el) => {
+      el.setAttribute('data-ascii-done', '');
       const job = prepare(el);
 
       // Reserve the final size before scrambling, so the page never reflows
@@ -132,14 +140,17 @@
     });
   }
 
+  // Published for the overlay, which inserts drawings after load.
+  window.AsciiReveal = { attach };
+
   // Wait for the webfont. The grid is measured in JetBrains Mono; the
   // fallback mono has different metrics, so measuring before the font lands
   // reserves the wrong height and the page jumps.
   function boot() {
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(init);
+      document.fonts.ready.then(() => attach());
     } else {
-      init();
+      attach();
     }
   }
 
