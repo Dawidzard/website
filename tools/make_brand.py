@@ -142,6 +142,17 @@ def flood_key_from_border(dist, tol):
     return np.where(seen, 0.0, 1.0)
 
 
+def place(img, cut, size, fill):
+    """Centre the subject on the ground. Centred, not bottom-anchored: the
+    platforms crop an avatar to a circle, and a subject pushed to the bottom
+    loses its shoulders to the arc."""
+    scale = size * fill / max(cut.width, cut.height)
+    cut = cut.resize((max(1, round(cut.width * scale)),
+                      max(1, round(cut.height * scale))), Image.LANCZOS)
+    img.paste(cut, ((size - cut.width) // 2, (size - cut.height) // 2), cut)
+    return img
+
+
 def build_photo_avatar(spec):
     """A real photograph standing in front of the project's own source code.
 
@@ -171,10 +182,20 @@ def build_photo_avatar(spec):
         i += 1
 
     # Subject.
-    photo = Image.open(spec["photo"]).convert("RGB")
+    mode = "RGBA" if spec.get("has_alpha") else "RGB"
+    photo = Image.open(ROOT / spec["photo"] if not str(spec["photo"])[1:2] == ":"
+                       else spec["photo"]).convert(mode)
     x0, y0, x1, y1 = spec["crop"]
     photo = photo.crop((int(x0 * photo.width), int(y0 * photo.height),
                         int(x1 * photo.width), int(y1 * photo.height)))
+    # A source that already carries alpha needs no key at all: a cutout
+    # produced by segmentation (tools/cutout.py) brings its own matte, and
+    # a photograph of a room cannot be keyed anyway -- there is no flat
+    # colour behind the subject to key against.
+    if spec.get("has_alpha"):
+        cut = photo
+        return place(img, cut, size, spec.get("fill", 0.92))
+
     a = np.asarray(photo, dtype=np.float64)
 
     # The flat colour the cutout was flattened onto. White for a plain
@@ -226,14 +247,7 @@ def build_photo_avatar(spec):
     rgba = np.dstack([colour, alpha * 255]).astype(np.uint8)
     cut = Image.fromarray(rgba, "RGBA")
 
-    # Centred, not bottom-anchored: the platforms crop this to a circle, and
-    # a subject pushed to the bottom loses its shoulders to the arc.
-    fill = spec.get("fill", 0.92)
-    scale = size * fill / max(cut.width, cut.height)
-    cut = cut.resize((max(1, round(cut.width * scale)),
-                      max(1, round(cut.height * scale))), Image.LANCZOS)
-    img.paste(cut, ((size - cut.width) // 2, (size - cut.height) // 2), cut)
-    return img
+    return place(img, cut, size, spec.get("fill", 0.92))
 
 
 def build_art_banner(spec):
@@ -303,15 +317,17 @@ TARGETS = {
 
     # LinkedIn keeps the real photograph, standing in front of the site's
     # own source.
-    # From the platform's own crop view, so the framing is the one he chose.
-    # 512 rather than 800: the source disc is about 284 px across, and
-    # LinkedIn asks for at least 400 -- inventing pixels past that would
-    # only make it soft. The pale mint behind him is the key colour.
-    "li-avatar": dict(kind="photo_avatar", size=512,
-                      photo="C:/Users/whizz/Pictures/Screenshots/Screenshot 2026-11-11 172154.png",
-                      key=(0xc8, 0xe6, 0xe8), key_tol=(10.0, 34.0), flood=True,
-                      crop=(0.134, 0.0, 0.790, 1.0), fill=1.0,
-                      code="scripts/ascii-reveal.js", skip=20, code_cell=11),
+    # His own photograph, with the room segmented away by tools/cutout.py
+    # and the site's source code behind him instead. 800 here: unlike the
+    # earlier screenshot source, this one is a full-resolution photo.
+    "li-avatar": dict(kind="photo_avatar", size=800,
+                      photo="assets/photo/portrait.png", has_alpha=True,
+                      # A full-height square centred on the head. The centre is the
+                      # intensity-weighted one over the hair-and-face band rather
+                      # than a bounding-box midpoint, which stray hair drags off.
+                      # fill leaves a margin so a circular crop does not graze the hair.
+                      crop=(0.047, 0.0, 0.797, 1.0), fill=0.95,
+                      code="scripts/ascii-reveal.js", skip=20, code_cell=15),
 
     # 2560x1440, but only the centre 1546x423 is shown on every device, so
     # the whole panel lives inside that box and the rest is plain ground.
