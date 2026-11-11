@@ -25,7 +25,7 @@
   // mix shifts from sparse to dense as the drawing resolves, so the field
   // appears to gain substance rather than just swap characters.
   const NOISE_SPARSE = " .'`^\",:;~-_";
-  const NOISE_DENSE = "+=*!?/\|()<>[]{}#%&$@0123456789";
+  const NOISE_DENSE = "+=*!?/\\|()<>[]{}#%&$@0123456789";
 
   const NOISE_TICK_MS = 55; // how often unresolved cells re-roll
   const prefersReducedMotion =

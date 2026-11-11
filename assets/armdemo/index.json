@@ -1,0 +1,243 @@
+{
+ "tile": 64,
+ "cols": 16,
+ "ext": "webp",
+ "scenes": {
+  "3": {
+   "context": [
+    0,
+    13
+   ],
+   "anchored": {
+    "up": [
+     13,
+     16
+    ],
+    "down": [
+     29,
+     16
+    ],
+    "left": [
+     45,
+     16
+    ],
+    "right": [
+     61,
+     16
+    ],
+    "still": [
+     77,
+     16
+    ]
+   },
+   "chain": [
+    {
+     "action": "up",
+     "range": [
+      93,
+      16
+     ]
+    },
+    {
+     "action": "down",
+     "range": [
+      109,
+      16
+     ]
+    },
+    {
+     "action": "left",
+     "range": [
+      125,
+      16
+     ]
+    },
+    {
+     "action": "right",
+     "range": [
+      141,
+      16
+     ]
+    }
+   ],
+   "count": 157
+  },
+  "51": {
+   "context": [
+    0,
+    13
+   ],
+   "anchored": {
+    "up": [
+     13,
+     16
+    ],
+    "down": [
+     29,
+     16
+    ],
+    "left": [
+     45,
+     16
+    ],
+    "right": [
+     61,
+     16
+    ],
+    "still": [
+     77,
+     16
+    ]
+   },
+   "chain": [
+    {
+     "action": "up",
+     "range": [
+      93,
+      16
+     ]
+    },
+    {
+     "action": "down",
+     "range": [
+      109,
+      16
+     ]
+    },
+    {
+     "action": "left",
+     "range": [
+      125,
+      16
+     ]
+    },
+    {
+     "action": "right",
+     "range": [
+      141,
+      16
+     ]
+    }
+   ],
+   "count": 157
+  },
+  "108": {
+   "context": [
+    0,
+    13
+   ],
+   "anchored": {
+    "up": [
+     13,
+     16
+    ],
+    "down": [
+     29,
+     16
+    ],
+    "left": [
+     45,
+     16
+    ],
+    "right": [
+     61,
+     16
+    ],
+    "still": [
+     77,
+     16
+    ]
+   },
+   "chain": [
+    {
+     "action": "up",
+     "range": [
+      93,
+      16
+     ]
+    },
+    {
+     "action": "down",
+     "range": [
+      109,
+      16
+     ]
+    },
+    {
+     "action": "left",
+     "range": [
+      125,
+      16
+     ]
+    },
+    {
+     "action": "right",
+     "range": [
+      141,
+      16
+     ]
+    }
+   ],
+   "count": 157
+  },
+  "204": {
+   "context": [
+    0,
+    13
+   ],
+   "anchored": {
+    "up": [
+     13,
+     16
+    ],
+    "down": [
+     29,
+     16
+    ],
+    "left": [
+     45,
+     16
+    ],
+    "right": [
+     61,
+     16
+    ],
+    "still": [
+     77,
+     16
+    ]
+   },
+   "chain": [
+    {
+     "action": "up",
+     "range": [
+      93,
+      16
+     ]
+    },
+    {
+     "action": "down",
+     "range": [
+      109,
+      16
+     ]
+    },
+    {
+     "action": "left",
+     "range": [
+      125,
+      16
+     ]
+    },
+    {
+     "action": "right",
+     "range": [
+      141,
+      16
+     ]
+    }
+   ],
+   "count": 157
+  }
+ }
+}
