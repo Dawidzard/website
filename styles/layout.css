@@ -136,8 +136,8 @@
 /* The divisors are columns * 0.6, and the art's real column count is what
    counts: rstrip drops empty trailing columns, so 'width 100' can emit 98.
    tests/guards.test.js fails if these drift apart. */
-.ascii--portrait { font-size: calc(100cqw / 58.8); }
-.ascii--portrait-sm { display: none; font-size: calc(100cqw / 36); }
+.ascii--portrait { font-size: calc(100cqw / 60.0); }
+.ascii--portrait-sm { display: none; font-size: calc(100cqw / 38.4); }
 
 @media (max-width: 860px) {
   .hero__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
@@ -411,3 +411,156 @@ body.is-locked { overflow: hidden; }
 /* The overlay figure is 80 columns -> 48em. */
 .overlay__figure { margin-bottom: var(--space-8); }
 .ascii--figure { font-size: calc(100cqw / 48); }
+
+/* --- CV: reference-article layout ----------------------------------------
+   The Wikipedia shape, in the site's own palette. It borrows the furniture
+   -- hatnote, infobox, contents list, ruled headings -- without borrowing
+   the identity: no logo, no chrome, and a hatnote that says plainly what
+   this is. */
+.wiki__hatnote {
+  margin: 0 0 var(--space-6);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--c-rule);
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--c-ink-muted);
+}
+
+.wiki__sub {
+  margin-top: var(--space-1);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--c-rule);
+  font-size: var(--text-sm);
+  color: var(--c-ink-muted);
+}
+
+.wiki__lead { font-size: var(--text-lg); line-height: var(--leading-snug); }
+
+/* Numbered, ruled section headings -- the single strongest cue that this is
+   an article rather than a landing page. Overrides the overlay's default
+   mono eyebrow style. */
+.wiki .wiki__h {
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--c-rule);
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: var(--track-tight);
+  text-transform: none;
+  color: var(--c-ink);
+}
+
+.wiki__label {
+  margin-top: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.wiki__plain { color: var(--c-ink-muted); }
+
+/* --- Contents ------------------------------------------------------------ */
+.wiki__toc {
+  display: inline-block;
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-8) var(--space-4) var(--space-4);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  background: var(--c-bg);
+}
+
+.wiki__toc-title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.wiki__toc ol { margin: 0; padding-left: 1.4em; font-size: var(--text-sm); }
+.wiki__toc li { margin-top: var(--space-1); }
+
+/* --- Infobox -------------------------------------------------------------
+   Floated so the lead text wraps around it, exactly as the reference does.
+   It un-floats below the breakpoint: a two-column block that narrow is
+   unreadable, and the float is the only thing making it a column. */
+.infobox {
+  float: right;
+  width: 262px;
+  margin: 0 0 var(--space-6) var(--space-8);
+  padding: var(--space-4);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface-2);
+}
+
+.infobox__name {
+  margin: 0 0 var(--space-3);
+  text-align: center;
+  font-weight: 500;
+}
+
+.ascii--infobox { font-size: calc(100cqw / 25.2); }
+
+.infobox__table {
+  width: 100%;
+  margin-top: var(--space-4);
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.infobox__table th,
+.infobox__table td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--c-rule);
+}
+
+.infobox__table th {
+  width: 38%;
+  padding-right: var(--space-3);
+  font-weight: 500;
+  color: var(--c-ink-muted);
+}
+
+.infobox__table .note { color: var(--c-ink-muted); font-size: var(--text-xs); }
+
+@media (max-width: 680px) {
+  .infobox { float: none; width: 100%; margin-left: 0; }
+}
+
+/* --- Work list ------------------------------------------------------------ */
+.cv-list { margin-top: var(--space-4); }
+
+.cv-list dt {
+  margin-top: var(--space-6);
+  font-weight: 500;
+}
+
+.cv-list dd {
+  margin: var(--space-2) 0 0;
+  max-width: var(--measure);
+  color: var(--c-ink-muted);
+}
+
+/* Status rides with the title, because "completed" and "coursework" are
+   different claims and the reader should not have to infer which is which. */
+.cv-tag {
+  margin-left: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-accent);
+  border: 1px solid var(--c-accent-dim);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+  white-space: nowrap;
+}

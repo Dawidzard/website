@@ -101,7 +101,40 @@ function check(label, ok, detail) {
         problems.length === 0, problems.join('\n        '));
 }
 
-/* 5. Tags balance. -------------------------------------------------------- */
+/* 5. Structured data must parse. -----------------------------------------
+ * The JSON-LD block is the only part of this page a CV parser is certain to
+ * read, and a syntax error in it fails silently in every browser: nothing
+ * renders differently, nothing logs. It has to be checked mechanically. */
+{
+  const blocks = [...html.matchAll(
+    /<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)];
+  check('a JSON-LD block is present', blocks.length > 0);
+
+  let parsed = null;
+  let ok = true;
+  for (const b of blocks) {
+    try { parsed = JSON.parse(b[1]); } catch (e) { ok = false; var err = e.message; }
+  }
+  check('JSON-LD parses', ok, typeof err === 'string' ? err : '');
+
+  if (parsed && parsed['@type'] === 'Person') {
+    const required = ['name', 'alumniOf', 'sameAs'];
+    const missing = required.filter((k) => !parsed[k]);
+    check('Person carries name, alumniOf and sameAs', missing.length === 0,
+          `missing: ${missing.join(', ')}`);
+
+    // Every profile the page links to should also be declared as sameAs, or
+    // the structured data and the visible page disagree about who this is.
+    const hosts = ['github.com', 'linkedin.com', 'youtube.com'];
+    const declared = (parsed.sameAs || []).join(' ');
+    const undeclared = hosts.filter(
+      (h) => html.includes(h) && !declared.includes(h));
+    check('every linked profile appears in sameAs', undeclared.length === 0,
+          `not declared: ${undeclared.join(', ')}`);
+  }
+}
+
+/* 6. Tags balance. -------------------------------------------------------- */
 {
   const VOID = new Set(['meta', 'link', 'br', 'img', 'input', 'hr', 'source', 'wbr']);
   const stack = [];
