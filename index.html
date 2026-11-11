@@ -41,6 +41,10 @@
        file:// URL, and this page is opened off disk as often as served. -->
   <script type="application/json" id="armdemo-manifest">{"tile":64,"cols":16,"ext":"webp","scenes":{"3":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157},"51":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157},"108":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157},"204":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157}}}</script>
 
+  <!-- Framings and their measured bar contrast, inlined for the same
+       reason as the arm demo: fetch() cannot read a file:// URL. -->
+  <script type="application/json" id="galaxy-framings">{"master":512,"res":[512,256,160,96,64],"framings":[{"file":"ngc2903-0.webp","label":"fills the frame","retained":{"512":100,"256":98,"160":98,"96":96,"64":93}},{"file":"ngc2903-1.webp","label":"half the frame","retained":{"512":100,"256":98,"160":96,"96":92,"64":86}},{"file":"ngc2903-2.webp","label":"a third","retained":{"512":100,"256":96,"160":93,"96":81,"64":64}},{"file":"ngc2903-3.webp","label":"a fifth","retained":{"512":100,"256":94,"160":83,"96":68,"64":45}}]}</script>
+
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
@@ -533,6 +537,10 @@
           Submitted as a pair for the Neural Networks course. I built the classifier end
           to end: dataset preparation, architecture, training and evaluation.
         </p>
+
+        <div class="overlay__actions">
+          <button class="btn btn--accent" type="button" data-overlay="demo-galaxy">Run the demo</button>
+        </div>
     <div class="overlay__actions">
       <div class="link-row"><a href="https://github.com/Dawidzard/galaxy-cnn">Repository</a></div>
     </div>
@@ -781,6 +789,65 @@ loop: add r1, r2
     </p>
   </template>
 
+
+  <template id="tpl-demo-galaxy">
+    <p class="eyebrow">Interactive &nbsp;/&nbsp; Why barred spirals are the hard class</p>
+    <h3 id="ov-title">What 96&times;96 actually costs</h3>
+    <p class="project__meta">
+      NGC 2903, a barred spiral, photographed by me. Not a Galaxy Zoo 2 frame
+      &mdash; the classifier never saw this image. It is here to show what the
+      resize does, not to stand in for the dataset.
+    </p>
+    <p>
+      The report blames the 96&times;96 input for barred spirals being the weakest
+      class. Measuring it on a real bar says something more exact:
+      <strong>at 96&times;96 the bar survives perfectly well, as long as the galaxy
+      fills the frame.</strong> What destroys it is the galaxy being small
+      <em>within</em> the frame &mdash; a more distant or smaller one, in a cutout
+      of fixed size. The variable is not the input size on its own, but how many
+      pixels land across the galaxy.
+    </p>
+
+    <div class="gx">
+      <div class="gx-screen">
+        <canvas data-gx-canvas width="320" height="320"
+                aria-label="NGC 2903 at the selected framing and resolution"></canvas>
+      </div>
+
+      <div class="gx-controls">
+        <label class="gx-ctl">
+          <span>galaxy size <b data-gx-label-framing></b></span>
+          <input type="range" data-gx-framing min="0" max="3" step="1" value="0">
+        </label>
+        <label class="gx-ctl">
+          <span>input resolution <b data-gx-label-res></b></span>
+          <input type="range" data-gx-res min="0" max="4" step="1" value="3">
+        </label>
+
+        <div class="gx-meter-wrap">
+          <p class="gx-meter-label">bar contrast retained <b data-gx-readout></b></p>
+          <div class="gx-meter"><i data-gx-meter></i></div>
+        </div>
+        <p class="gx-caption" data-gx-caption></p>
+      </div>
+    </div>
+
+    <h4>What the measurement is</h4>
+    <p>
+      Sample brightness around a circle at the bar&rsquo;s radius and take
+      (max &minus; min) / (max + min). A bar makes brightness at a fixed radius
+      depend strongly on angle; once it has smeared into the bulge, it does not.
+      Two simpler measures were tried first and thrown away: gradient energy
+      reports edge strength, which a bright blob has whether or not it is
+      bar-shaped, and measuring it after a nearest-neighbour enlargement
+      measures blockiness rather than surviving detail.
+    </p>
+
+    <div class="overlay__actions">
+      <div class="link-row"><a href="https://github.com/Dawidzard/galaxy-cnn">Repository</a></div>
+    </div>
+  </template>
+
   <template id="tpl-cv">
     <article class="wiki">
 
@@ -958,5 +1025,6 @@ loop: add r1, r2
   <script src="scripts/armdemo.js" defer></script>
   <script src="scripts/toolchain.js" defer></script>
   <script src="scripts/toolchain-ui.js" defer></script>
+  <script src="scripts/galaxydemo.js" defer></script>
 </body>
 </html>

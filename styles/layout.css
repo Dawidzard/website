@@ -777,3 +777,98 @@ body.is-locked { overflow: hidden; }
   .tc-sources { grid-template-columns: 1fr; }
   .tc-row { grid-template-columns: 1fr; gap: 0; }
 }
+
+/* --- Galaxy resolution demo ---------------------------------------------- */
+.gx {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-md);
+  background: var(--c-bg);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.gx-screen {
+  padding: var(--space-2);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  background: var(--c-bg-deep);
+  line-height: 0;
+}
+
+/* The enlargement must show the model's pixels, not a smoothed guess at
+   what was between them. */
+.gx-screen canvas {
+  width: 320px;
+  height: 320px;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
+.gx-ctl { display: block; margin-bottom: var(--space-6); }
+
+.gx-ctl > span {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.gx-ctl > span b { color: var(--c-accent); font-weight: 400; }
+
+.gx-ctl input[type="range"] {
+  width: 100%;
+  accent-color: var(--c-accent);
+}
+
+.gx-meter-label {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.gx-meter-label b { color: var(--c-ink); font-weight: 500; }
+
+.gx-meter {
+  height: 6px;
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.gx-meter i {
+  display: block;
+  height: 100%;
+  background: var(--c-accent-dim);
+  transition: width var(--dur-med) var(--ease-out),
+              background var(--dur-med) var(--ease-out);
+}
+
+/* Below this the bar is no longer reliably there, which is the point. */
+.gx-meter i.is-low { background: var(--c-accent); }
+
+.gx-caption {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-ink-faint);
+}
+
+@media (max-width: 680px) {
+  .gx { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Grid item holding the controls: min-width:0 so a long label cannot widen
+   the track and push the canvas off the panel. */
+.gx-controls { min-width: 0; }
+
+.gx-meter-wrap { margin-top: var(--space-8); }
