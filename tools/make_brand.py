@@ -141,13 +141,26 @@ def build_photo_avatar(spec):
                         int(x1 * photo.width), int(y1 * photo.height)))
     a = np.asarray(photo, dtype=np.float64)
     dist = (255.0 - a).max(axis=2)                    # 0 on pure white
-    alpha = np.clip((dist - 6.0) / 22.0, 0.0, 1.0)    # soft edge, no fringe
-    rgba = np.dstack([a, alpha * 255]).astype(np.uint8)
+    alpha = np.clip((dist - 8.0) / 26.0, 0.0, 1.0)
+
+    # Un-multiply the white. Every edge pixel in this cutout is already a
+    # blend of the subject with the white it was flattened onto:
+    #     observed = colour * alpha + 255 * (1 - alpha)
+    # Taking alpha without inverting that leaves those pixels near-white and
+    # still partly opaque, which composites as a pale halo around the hair
+    # and shoulders. Solving for colour removes it.
+    safe = np.maximum(alpha, 1e-3)[..., None]
+    colour = np.clip((a - 255.0 * (1.0 - safe)) / safe, 0, 255)
+    rgba = np.dstack([colour, alpha * 255]).astype(np.uint8)
     cut = Image.fromarray(rgba, "RGBA")
 
-    target_h = int(size * spec.get("fill", 0.92))
-    cut = cut.resize((round(cut.width * target_h / cut.height), target_h), Image.LANCZOS)
-    img.paste(cut, ((size - cut.width) // 2, size - cut.height), cut)
+    # Centred, not bottom-anchored: the platforms crop this to a circle, and
+    # a subject pushed to the bottom loses its shoulders to the arc.
+    fill = spec.get("fill", 0.92)
+    scale = size * fill / max(cut.width, cut.height)
+    cut = cut.resize((max(1, round(cut.width * scale)),
+                      max(1, round(cut.height * scale))), Image.LANCZOS)
+    img.paste(cut, ((size - cut.width) // 2, (size - cut.height) // 2), cut)
     return img
 
 
@@ -205,21 +218,25 @@ def build_text_banner(spec):
 # --------------------------------------------------------------------------
 
 TARGETS = {
-    # GitHub serves avatars square and crops them to a circle, so the disc
-    # of Mars suits the frame exactly.
-    "gh-avatar": dict(kind="ascii_avatar", size=800, art="mars.txt",
-                      colour=mix(ACCENT, INK, 0.25), pad=0.04),
+    # GitHub crops avatars to a circle. Saturn's rings run diagonally, so
+    # the drawing is taller than it is wide and sits inside the circle with
+    # room at the sides, rather than being clipped through the ansae.
+    "gh-avatar": dict(kind="ascii_avatar", size=800, art="saturn.txt",
+                      colour=mix(ACCENT, INK, 0.3), pad=0.05),
 
-    # YouTube shows the channel picture as a circle at small sizes; the
-    # portrait is cropped close enough to survive that.
-    "yt-avatar": dict(kind="ascii_avatar", size=800, art="portrait-head.txt",
-                      colour=MUTED, pad=0.07),
+    # Framed for a circle: chin, neck and shoulders inside the disc, rather
+    # than a head floating with its jaw cut off at the bottom.
+    "yt-avatar": dict(kind="ascii_avatar", size=800, art="portrait-avatar.txt",
+                      colour=MUTED, pad=0.05),
 
     # LinkedIn keeps the real photograph, standing in front of the site's
     # own source.
     "li-avatar": dict(kind="photo_avatar", size=800,
                       photo="C:/Users/whizz/Desktop/8484.jpg",
-                      crop=(0.33, 0.02, 0.87, 0.80), fill=0.95,
+                      # A square crop centred on the head. The subject runs off the right
+                      # and bottom edges of the source, so the shoulder cannot be
+                      # recovered -- this at least frames it symmetrically.
+                      crop=(0.225, 0.0, 0.975, 1.0), fill=1.0,
                       code="scripts/ascii-reveal.js", skip=20, code_cell=15),
 
     # 2560x1440, but only the centre 1546x423 is shown on every device, so
