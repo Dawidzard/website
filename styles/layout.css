@@ -133,9 +133,11 @@
 
 .hero__portrait { margin: 0; }
 
-/* 100 columns -> 60em. 64 columns -> 38.4em. */
-.ascii--portrait { font-size: calc(100cqw / 60); }
-.ascii--portrait-sm { display: none; font-size: calc(100cqw / 38.4); }
+/* The divisors are columns * 0.6, and the art's real column count is what
+   counts: rstrip drops empty trailing columns, so 'width 100' can emit 98.
+   tests/guards.test.js fails if these drift apart. */
+.ascii--portrait { font-size: calc(100cqw / 58.8); }
+.ascii--portrait-sm { display: none; font-size: calc(100cqw / 37.8); }
 
 @media (max-width: 860px) {
   .hero__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }

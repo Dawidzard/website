@@ -37,26 +37,40 @@ global.IntersectionObserver = class {
   observe(target) { this.cb([{ isIntersecting: true, target }], { unobserve(){} }); }
 };
 
-const src = fs.readFileSync(path.join(__dirname, '..', 'scripts/ascii-reveal.js'), 'utf8');
+// An alternate script path may be passed as argv[2], which lets a negative
+// control run this same harness against a deliberately broken build.
+const target = process.argv[2] || path.join(__dirname, '..', 'scripts/ascii-reveal.js');
+const src = fs.readFileSync(target, 'utf8');
 eval(src);
 
 const expectedLineLengths = ART.split('\n').map((l) => l.length);
 
 setImmediate(() => {              // let document.fonts.ready resolve
-  let frames = 0, shears = 0, firstFrame = null;
+  let frames = 0, shears = 0, firstFrame = null, bleed = 0;
+
+  // Indices that are blank in the finished drawing. Nothing may ever be
+  // painted there: scrambling the empty space around the subject fills the
+  // bounding box with dust for the length of the reveal, which reads as a
+  // rectangle of dirt rather than as a portrait assembling.
+  const blanks = [...ART].map((c, i) => (c === ' ' ? i : -1)).filter((i) => i >= 0);
+
   while (queue.length && frames < 1000) {
     const fn = queue.shift();
     clock += 16.7;
     fn(clock);
     frames++;
     if (frames === 2) firstFrame = el.textContent;
-    const lens = el.textContent.split('\n').map((l) => l.length);
+    const now = el.textContent;
+    const lens = now.split('\n').map((l) => l.length);
     if (lens.length !== expectedLineLengths.length ||
         lens.some((n, i) => n !== expectedLineLengths[i])) shears++;
+    if (blanks.some((i) => now[i] !== ' ')) bleed++;
   }
 
   console.log('frames run:              ', frames);
   console.log('grid shears detected:    ', shears, shears === 0 ? 'OK' : 'FAIL');
+  console.log('frames with background bleed:', bleed, bleed === 0 ? 'OK' : 'FAIL');
+  console.log('blank cells watched:     ', blanks.length);
   console.log('final === authored art:  ', el.textContent === ART ? 'OK' : 'FAIL');
   console.log('is-forming cleared:      ', !el.classList.has('is-forming') ? 'OK' : 'FAIL');
   console.log('minHeight reserved:      ', el.style.minHeight);

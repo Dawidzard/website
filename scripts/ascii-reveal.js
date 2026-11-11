@@ -81,6 +81,13 @@
         // Newlines must never be replaced or the grid collapses into one line.
         if (ch === '\n') { out[i] = '\n'; settled++; continue; }
 
+        // Nor may a cell that ends up empty ever hold noise. Scrambling the
+        // whole bounding box fills the space around the subject with dust
+        // for the length of the reveal, which reads as a rectangle of dirt
+        // rather than as a portrait assembling. The drawing now condenses
+        // strictly inside its own silhouette.
+        if (ch === ' ') { out[i] = ' '; settled++; continue; }
+
         if (t >= delays[i] + duration) {
           out[i] = ch;
           settled++;
