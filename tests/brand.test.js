@@ -28,7 +28,10 @@ const meta = JSON.parse(fs.readFileSync(path.join(B, 'meta.json'), 'utf8'));
 const SPEC = {
   'gh-avatar': [800, 800],
   'yt-avatar': [800, 800],
-  'li-avatar': [800, 800],
+  // 512, not 800: the source is a 284 px disc from the platform's own
+  // crop view, and LinkedIn asks for at least 400. Inventing pixels
+  // past that would only make it soft.
+  'li-avatar': [512, 512],
   'li-banner': [1584, 396],
   'yt-banner': [2560, 1440],   // only the centre 1546x423 is shown everywhere
 };

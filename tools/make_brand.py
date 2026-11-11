@@ -22,7 +22,7 @@ import pathlib
 import re
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FONTS = ROOT / "assets/fonts"
@@ -106,6 +106,42 @@ def build_ascii_avatar(spec):
     return img
 
 
+def flood_key_from_border(dist, tol):
+    """Return alpha that is 0 only on background reachable from the border.
+
+    `dist` is each pixel's colour distance from the key. A pixel counts as
+    background if it is within `tol` AND connected to the edge of the frame
+    through other such pixels. Everything else is subject, whatever colour
+    it happens to be -- which is the point, because a pale face is the same
+    colour as a pale backdrop and only its position distinguishes it.
+    """
+    h, w = dist.shape
+    near = dist <= tol
+    seen = np.zeros((h, w), bool)
+    stack = []
+
+    for x in range(w):
+        for y in (0, h - 1):
+            if near[y, x] and not seen[y, x]:
+                seen[y, x] = True
+                stack.append((y, x))
+    for y in range(h):
+        for x in (0, w - 1):
+            if near[y, x] and not seen[y, x]:
+                seen[y, x] = True
+                stack.append((y, x))
+
+    while stack:
+        y, x = stack.pop()
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            ny, nx = y + dy, x + dx
+            if 0 <= ny < h and 0 <= nx < w and near[ny, nx] and not seen[ny, nx]:
+                seen[ny, nx] = True
+                stack.append((ny, nx))
+
+    return np.where(seen, 0.0, 1.0)
+
+
 def build_photo_avatar(spec):
     """A real photograph standing in front of the project's own source code.
 
@@ -140,17 +176,53 @@ def build_photo_avatar(spec):
     photo = photo.crop((int(x0 * photo.width), int(y0 * photo.height),
                         int(x1 * photo.width), int(y1 * photo.height)))
     a = np.asarray(photo, dtype=np.float64)
-    dist = (255.0 - a).max(axis=2)                    # 0 on pure white
-    alpha = np.clip((dist - 8.0) / 26.0, 0.0, 1.0)
 
-    # Un-multiply the white. Every edge pixel in this cutout is already a
-    # blend of the subject with the white it was flattened onto:
-    #     observed = colour * alpha + 255 * (1 - alpha)
-    # Taking alpha without inverting that leaves those pixels near-white and
-    # still partly opaque, which composites as a pale halo around the hair
-    # and shoulders. Solving for colour removes it.
-    safe = np.maximum(alpha, 1e-3)[..., None]
-    colour = np.clip((a - 255.0 * (1.0 - safe)) / safe, 0, 255)
+    # The flat colour the cutout was flattened onto. White for a plain
+    # export; the pale mint of a platform's own crop view, when the source
+    # is a screenshot of one.
+    key = np.array(spec.get("key", (255, 255, 255)), dtype=np.float64)
+    dist = np.abs(a - key).max(axis=2)                # 0 on the key colour
+    lo, hi = spec.get("key_tol", (8.0, 26.0))
+
+    if spec.get("flood"):
+        # Colour distance alone cannot do this one. Against a pale mint,
+        # this subject's own lit skin lands within about 74 of the key --
+        # measured -- so any threshold loose enough to catch the backdrop
+        # also catches his cheek, nose and chin. Thresholding made two
+        # thirds of the unstable pixels fall inside the face.
+        #
+        # Topology separates them where colour cannot: the backdrop is one
+        # region touching the border, and a face is not. The flood uses a
+        # TIGHT tolerance so it cannot creep through the skin at the
+        # silhouette (a loose one leaks in exactly there, which is what the
+        # first attempt did), and the soft edge then comes from blurring
+        # the mask rather than from colour.
+        tight = spec.get("flood_tol", 12.0)
+        bg = 1.0 - flood_key_from_border(dist, tight)         # 1 where backdrop
+        feather = spec.get("feather", 1.2)
+        soft = np.asarray(Image.fromarray((bg * 255).astype(np.uint8))
+                          .filter(ImageFilter.GaussianBlur(feather)),
+                          dtype=np.float64) / 255.0
+        alpha = 1.0 - soft
+    else:
+        alpha = np.clip((dist - lo) / (hi - lo), 0.0, 1.0)
+
+    # Un-multiply the key. Every edge pixel is already a blend of the
+    # subject with the colour behind it:
+    #     observed = colour * alpha + key * (1 - alpha)
+    # Taking alpha without inverting that leaves those pixels near the key
+    # colour and still partly opaque, which composites as a halo around the
+    # hair and shoulders. Solving for colour removes it.
+    # Divide by a FLOOR, not by alpha itself. The inversion is exact only
+    # as far as the pixel is actually known: at low alpha it is mostly key
+    # colour plus sensor noise, and dividing by a small number turns that
+    # noise into saturated magenta and cyan speckle along the whole
+    # silhouette -- 1.5% of the pixels, every one of them on the outline,
+    # which is exactly where it shows. Above the floor the result is
+    # unchanged; below it the pixel damps back towards what was observed.
+    floor = spec.get("unmul_floor", 0.5)
+    safe = np.maximum(alpha, floor)[..., None]
+    colour = np.clip((a - key * (1.0 - safe)) / safe, 0, 255)
     rgba = np.dstack([colour, alpha * 255]).astype(np.uint8)
     cut = Image.fromarray(rgba, "RGBA")
 
@@ -231,13 +303,15 @@ TARGETS = {
 
     # LinkedIn keeps the real photograph, standing in front of the site's
     # own source.
-    "li-avatar": dict(kind="photo_avatar", size=800,
-                      photo="C:/Users/whizz/Desktop/8484.jpg",
-                      # A square crop centred on the head. The subject runs off the right
-                      # and bottom edges of the source, so the shoulder cannot be
-                      # recovered -- this at least frames it symmetrically.
-                      crop=(0.225, 0.0, 0.975, 1.0), fill=1.0,
-                      code="scripts/ascii-reveal.js", skip=20, code_cell=15),
+    # From the platform's own crop view, so the framing is the one he chose.
+    # 512 rather than 800: the source disc is about 284 px across, and
+    # LinkedIn asks for at least 400 -- inventing pixels past that would
+    # only make it soft. The pale mint behind him is the key colour.
+    "li-avatar": dict(kind="photo_avatar", size=512,
+                      photo="C:/Users/whizz/Pictures/Screenshots/Screenshot 2026-11-11 172154.png",
+                      key=(0xc8, 0xe6, 0xe8), key_tol=(10.0, 34.0), flood=True,
+                      crop=(0.134, 0.0, 0.790, 1.0), fill=1.0,
+                      code="scripts/ascii-reveal.js", skip=20, code_cell=11),
 
     # 2560x1440, but only the centre 1546x423 is shown on every device, so
     # the whole panel lives inside that box and the rest is plain ground.
