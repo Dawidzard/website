@@ -12,18 +12,31 @@
   "--c-surface-2": "#3a2b20"
  },
  "targets": {
-  "linkedin": [
-   1584,
-   396
+  "gh-avatar": [
+   800,
+   800
   ],
-  "youtube": [
+  "yt-avatar": [
+   800,
+   800
+  ],
+  "li-avatar": [
+   800,
+   800
+  ],
+  "yt-banner": [
    2560,
    1440
   ],
-  "github": [
-   1280,
-   320
+  "li-banner": [
+   1584,
+   396
   ]
  },
- "portrait": "portrait-64.txt"
+ "art": [
+  "andromeda.txt",
+  "mars.txt",
+  "portrait-head.txt",
+  "zhiwy-panel.txt"
+ ]
 }

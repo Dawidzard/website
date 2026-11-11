@@ -40,7 +40,7 @@ def build_mask(rgb, bg=(255, 255, 255), tol=16):
 
 def to_ascii(path, width, ramp, char_aspect, gamma, invert, margin,
              keep_top=1.0, equalize=True, crop=None, sharpen=0.0, radius=1.6,
-             solid=False, despeckle=0, dissolve=0.0):
+             solid=False, despeckle=0, dissolve=0.0, floor=True):
     im = Image.open(path).convert("RGB")
 
     # An explicit crop, in fractions of the image, beats auto-framing for a
@@ -148,10 +148,20 @@ def to_ascii(path, width, ramp, char_aspect, gamma, invert, margin,
         lum = 1.0 - lum
     lum = np.clip(lum, 0.0, 1.0) ** gamma
 
-    # Inside the subject the ramp starts at index 1, so nothing in the
-    # silhouette can collapse to a space.
+    # Two mappings, because two kinds of picture need opposite things.
+    #
+    # A portrait on a dark page needs a FLOOR: dark hair must still get the
+    # faintest visible glyph, or the head vanishes and the face floats.
+    #
+    # A photograph of the night sky needs the opposite. There the dark IS
+    # the subject's surroundings, and forcing a glyph into it would bury a
+    # galaxy in a solid rectangle of characters. With no floor the sky falls
+    # to the space at ramp[0] and the object glows out of an empty field.
     body = len(ramp) - 1
-    idx = 1 + np.clip((lum * (body - 1)).round().astype(int), 0, body - 1)
+    if floor:
+        idx = 1 + np.clip((lum * (body - 1)).round().astype(int), 0, body - 1)
+    else:
+        idx = np.clip((lum * body).round().astype(int), 0, body)
     idx = np.where(inside, idx, 0)
 
     table = np.array(list(ramp))
@@ -172,6 +182,9 @@ def main():
                    help="drop subject cells with fewer than N subject neighbours (0-8)")
     p.add_argument("--dissolve", type=float, default=0.0,
                    help="0-1; how strongly the silhouette edge scatters")
+    p.add_argument("--no-floor", action="store_true",
+                   help="let the darkest cells fall to a space; for night-sky "
+                        "images, where the dark is sky rather than subject")
     p.add_argument("--solid", action="store_true",
                    help="treat the whole image as subject (no background to mask)")
     p.add_argument("--no-equalize", action="store_true",
@@ -189,7 +202,8 @@ def main():
     art = to_ascii(a.image, a.width, a.ramp, a.char_aspect, a.gamma,
                    a.invert, a.margin, a.keep_top, not a.no_equalize,
                    tuple(float(v) for v in a.crop.split(',')) if a.crop else None,
-                   a.sharpen, a.radius, a.solid, a.despeckle, a.dissolve)
+                   a.sharpen, a.radius, a.solid, a.despeckle, a.dissolve,
+                   not a.no_floor)
     sys.stdout.write(art + "\n")
 
 
