@@ -45,7 +45,13 @@ global.window = {
   matchMedia: () => ({ matches: false }),
   addEventListener() {}, removeEventListener() {},
 };
+// The overlay announces what it put on screen so other modules can attach
+// to cloned content without it knowing they exist. Record those here.
+const events = [];
+global.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = (init || {}).detail; } };
+
 global.document = {
+  dispatchEvent(e) { events.push(e); return true; },
   body: { classList: { _s: new Set(),
     add(c) { this._s.add(c); }, remove(c) { this._s.delete(c); },
     contains(c) { return this._s.has(c); } } },
@@ -81,6 +87,9 @@ check('content populated from template', content.children.length === 1);
 check('body scroll locked', document.body.classList.contains('is-locked'));
 check('border drawn', border.textContent.length > 0);
 check('keydown handler registered', (listeners.keydown || []).length === 1);
+check('overlay:open announced with its key and content',
+      events.some((e) => e.type === 'overlay:open' && e.detail.key === 'cv'
+                      && e.detail.content === content));
 
 console.log('close with Escape:');
 fire('keydown', { key: 'Escape' });
@@ -88,6 +97,7 @@ check('overlay.hidden === true', overlay.hidden === true);
 check('body unlocked', !document.body.classList.contains('is-locked'));
 check('content emptied', content.children.length === 0);
 check('keydown handler removed', (listeners.keydown || []).length === 0);
+check('overlay:close announced', events.some((e) => e.type === 'overlay:close'));
 
 console.log('reopen, then close by clicking the close control:');
 fire('click', { target: trigger });
