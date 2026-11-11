@@ -640,6 +640,10 @@
           Writing all three is what makes the addresses stop being arbitrary. A relocation
           entry is abstract until you are the one who has to apply it.
         </p>
+
+        <div class="overlay__actions">
+          <button class="btn btn--accent" type="button" data-overlay="demo-asm">Run the demo</button>
+        </div>
   </template>
 
   <template id="tpl-p-blokapp">
@@ -720,6 +724,60 @@
       continues: each generated block becomes the next block&rsquo;s context. It is
       shown rather than hidden, because what degrades there is the arm&rsquo;s
       absolute position and the image quality, not its obedience.
+    </p>
+  </template>
+
+
+  <template id="tpl-demo-asm">
+    <p class="eyebrow">Interactive &nbsp;/&nbsp; Assemble &middot; Link &middot; Execute</p>
+    <h3 id="ov-title">A toolchain in three stages</h3>
+    <p class="project__meta">
+      A miniature of the pipeline, running here in the page &mdash; not the
+      project&rsquo;s own code, and a toy instruction set chosen to make
+      relocation visible in three bytes.
+    </p>
+    <p>
+      <code>main.s</code> uses a symbol that only <code>data.s</code> defines.
+      Assemble, and the operand stays <strong>zero</strong> with a relocation noted
+      beside it &mdash; the assembler cannot know where <code>count</code> will
+      land. Link, and watch the hole get filled. Then step the result.
+    </p>
+
+    <div class="tc">
+      <div class="tc-sources">
+        <label>main.s
+          <textarea data-tc-main spellcheck="false" rows="8">      ldi r1, 0
+      ld  r2, [count]
+loop: add r1, r2
+      ldi r3, 1
+      sub r2, r3
+      jnz r2, loop
+      out r1
+      halt</textarea>
+        </label>
+        <label>data.s
+          <textarea data-tc-data spellcheck="false" rows="8">count: .word 5</textarea>
+        </label>
+      </div>
+
+      <div class="tc-bar">
+        <button class="btn" type="button" data-tc="assemble">assemble</button>
+        <button class="btn" type="button" data-tc="link">link</button>
+        <button class="btn" type="button" data-tc="step">step</button>
+        <button class="btn" type="button" data-tc="run">run</button>
+        <button class="btn" type="button" data-tc="reset">reset</button>
+      </div>
+
+      <p class="tc-status" data-tc-status>ready</p>
+      <div class="tc-stage" data-tc-stage></div>
+    </div>
+
+    <p class="project__meta">
+      One instruction is three bytes: opcode and register in the first, a 16-bit
+      operand in the other two. Instructions: <code>ldi ld st add sub jmp jnz out
+      halt</code>, plus <code>.word</code> and labels. Try deleting the line in
+      <code>data.s</code> and linking again &mdash; that is the error the linker
+      exists to produce.
     </p>
   </template>
 
@@ -898,5 +956,7 @@
   <script src="scripts/ascii-reveal.js" defer></script>
   <script src="scripts/overlay.js" defer></script>
   <script src="scripts/armdemo.js" defer></script>
+  <script src="scripts/toolchain.js" defer></script>
+  <script src="scripts/toolchain-ui.js" defer></script>
 </body>
 </html>

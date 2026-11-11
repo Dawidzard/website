@@ -656,3 +656,124 @@ body.is-locked { overflow: hidden; }
 
 /* The free-rollout caveat has to be legible as a caveat, not decoration. */
 .demo__warn { color: var(--c-ink); }
+
+/* --- Toolchain demo ------------------------------------------------------ */
+.tc {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-md);
+  background: var(--c-bg);
+}
+
+.tc-sources {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-4);
+}
+
+.tc-sources label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.tc-sources textarea {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--c-ink);
+  background: var(--c-surface);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  text-transform: none;
+  letter-spacing: 0;
+  /* Tabs would shift the column the labels align on. */
+  tab-size: 2;
+}
+
+.tc-bar {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tc-bar .btn { padding: var(--space-2) var(--space-4); }
+
+.tc-status {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-ink-muted);
+  min-height: 1.3em;
+}
+
+.tc-status.is-bad { color: var(--c-accent); }
+
+.tc-stage { margin-top: var(--space-4); }
+
+.tc-block + .tc-block { margin-top: var(--space-6); }
+
+.tc-h {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+  margin: 0 0 var(--space-2);
+}
+
+.tc-h.tc-err { color: var(--c-accent); }
+
+.tc-row {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--space-3);
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-xs);
+}
+
+.tc-row > span {
+  font-family: var(--font-mono);
+  color: var(--c-ink-faint);
+}
+
+.tc-row code {
+  font-size: var(--text-xs);
+  color: var(--c-ink-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.tc-bytes, .tc-mem {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--c-ink-muted);
+  margin: 0;
+  overflow-x: auto;
+}
+
+/* The three states a byte can be in are the whole lesson: a hole the
+   assembler left, the value the linker wrote into it, and where the CPU is
+   reading from right now. */
+.tc-hole { color: var(--c-accent); text-decoration: underline dotted; }
+.tc-patched { color: var(--c-accent); }
+.tc-pc { color: var(--c-bg); background: var(--c-ink); }
+.tc-addr { color: var(--c-ink-faint); }
+.tc-out { color: var(--c-ink); }
+.tc-hint { color: var(--c-ink-muted); font-size: var(--text-sm); }
+
+@media (max-width: 680px) {
+  .tc-sources { grid-template-columns: 1fr; }
+  .tc-row { grid-template-columns: 1fr; gap: 0; }
+}
