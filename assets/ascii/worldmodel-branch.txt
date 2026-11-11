@@ -1,0 +1,12 @@
+
+        +--------------------------+              +----------------------------+
+        |   13 real frames         |      ,-----> |   commanded  LEFT          |
+        |   one fixed noise seed   |      |       |   gripper dx = -7.19 px    |
+        |   held-out scene         |------+       +----------------------------+
+        +--------------------------+      |       +----------------------------+
+                                          '-----> |   commanded  RIGHT         |
+              one number differs                  |   gripper dx = +7.27 px    |
+              between the branches                +----------------------------+
+
+                     14.5 px apart on a 64 px frame  --  23% of its width
+

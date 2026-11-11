@@ -229,6 +229,130 @@
       <div class="page">
         <p class="eyebrow">01 &nbsp;/&nbsp; Selected work</p>
         <h2>Projects</h2>
+
+        <article class="project">
+
+          <figure class="project__figure">
+            <div class="ascii-frame">
+<pre class="ascii ascii--figure" aria-hidden="true" data-ascii-reveal data-duration="600" data-stagger="900">
+
+        +--------------------------+              +----------------------------+
+        |   13 real frames         |      ,-----> |   commanded  LEFT          |
+        |   one fixed noise seed   |      |       |   gripper dx = -7.19 px    |
+        |   held-out scene         |------+       +----------------------------+
+        +--------------------------+      |       +----------------------------+
+                                          '-----> |   commanded  RIGHT         |
+              one number differs                  |   gripper dx = +7.27 px    |
+              between the branches                +----------------------------+
+
+                     14.5 px apart on a 64 px frame  --  23% of its width
+</pre>
+            </div>
+            <figcaption class="visually-hidden">
+              Two branches from one context: a LEFT command moves the gripper
+              -7.19 px, a RIGHT command +7.27 px, 14.5 px apart on a 64 px frame.
+            </figcaption>
+          </figure>
+
+          <div class="project__head">
+            <h3 class="project__title">Action-Conditioned Video World Model</h3>
+            <span class="project__status">Completed</span>
+          </div>
+          <p class="project__meta">
+            PSIML 2026 &nbsp;·&nbsp; 5 days &nbsp;·&nbsp; one shared A100 40GB
+            &nbsp;·&nbsp; pair project with Mihajlo Stevanovi&#263;
+          </p>
+
+          <div class="project__body">
+            <p>
+              A pretrained video diffusion model can continue a scene. Can it be
+              taught to <em>obey</em>? Given a few real frames of a robot arm and a
+              commanded gripper displacement, predict the future — and have the arm
+              actually move the way it was told.
+            </p>
+            <p>
+              Built on <a href="https://github.com/shengshu-ai/minWM">minWM</a>
+              (Wan2.1-T2V-1.3B). Upstream conditions on <strong>camera pose</strong>;
+              conditioning on <strong>robot action</strong> is the gap this fills. The
+              1.3B backbone is pretrained — the work here is a rank-16 LoRA plus an
+              action encoder, fine-tuned on BAIR robot pushing at 64×64.
+            </p>
+
+            <h4>What I built</h4>
+            <ul>
+              <li>LoRA + action-encoder fine-tuning on BAIR, 8000 steps</li>
+              <li>The evaluation harness, including two controls that changed how
+                  every number is reported: a learned null-action embedding and a
+                  divergence noise floor</li>
+              <li>A DMD-distilled vs teacher-forcing comparison, to answer whether
+                  flow-matching fine-tuning undoes the distillation</li>
+              <li>A scheduled-sampling ablation, and goal-conditioned action search
+                  (6×6 grid, one batched forward pass)</li>
+              <li>The diagnosis of the free-rollout failure described below</li>
+            </ul>
+
+            <h4>Result</h4>
+            <div class="table-scroll">
+            <table class="measure-table">
+              <tbody>
+                <tr>
+                  <th>Direction accuracy, relative</th>
+                  <td><b>99.6%</b> (255/256)</td>
+                  <td class="note">does <code>right</code> end up right of <code>left</code>?</td>
+                </tr>
+                <tr>
+                  <th>Direction accuracy, absolute</th>
+                  <td>84.8%</td>
+                  <td class="note">did each command move its own way?</td>
+                </tr>
+                <tr>
+                  <th>Value of the action signal</th>
+                  <td><b>+5.29 dB</b></td>
+                  <td class="note">PSNR with the real action minus PSNR with a null one</td>
+                </tr>
+                <tr>
+                  <th>PSNR</th>
+                  <td>18.56 dB</td>
+                  <td class="note">against a 22.74 dB VAE ceiling at this resolution — 82% of it</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+            <p class="project__meta">
+              Held-out 256-scene test split, best checkpoint, teacher-forced context.
+              FID/FVD sample counts are far below convention and are valid only as
+              relative comparisons between our own checkpoints.
+            </p>
+
+            <h4>What went wrong, and what it turned out to mean</h4>
+            <p>
+              A Monte Carlo free rollout — where each block's context is the previous
+              block's own output — first read as <em>control degrades with depth</em>.
+              That was wrong. A targeted diagnostic, issuing opposite commands from the
+              same self-generated context, showed relative direction accuracy holding at
+              <strong>98–100% through all three self-generated blocks</strong>. What
+              degrades is the arm's absolute position and the image quality, not its
+              obedience: the mechanism is exposure bias, a named failure mode with known
+              mitigations. Scheduled sampling roughly halved the quality decay for a real
+              cost of 1.5 dB single-step fidelity.
+            </p>
+            <p>
+              Classifier-free guidance was tried and did not help: relative direction
+              accuracy is already saturated at w=1, so it amplifies nothing while costing
+              fidelity and a second forward pass. Reported as a measured negative result.
+            </p>
+
+            <div class="hero__actions" style="justify-content: flex-start">
+              <button class="btn" type="button" data-open-demo disabled>
+                Run the demo &nbsp;(soon)
+              </button>
+              <div class="link-row">
+                <a href="https://github.com/MihStev/PSIML">Repository</a>
+              </div>
+            </div>
+          </div>
+
+        </article>
       </div>
     </section>
 

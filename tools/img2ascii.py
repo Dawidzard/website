@@ -39,7 +39,8 @@ def build_mask(rgb, bg=(255, 255, 255), tol=16):
 
 
 def to_ascii(path, width, ramp, char_aspect, gamma, invert, margin,
-             keep_top=1.0, equalize=True, crop=None, sharpen=0.0, radius=1.6):
+             keep_top=1.0, equalize=True, crop=None, sharpen=0.0, radius=1.6,
+             solid=False):
     im = Image.open(path).convert("RGB")
 
     # An explicit crop, in fractions of the image, beats auto-framing for a
@@ -52,7 +53,9 @@ def to_ascii(path, width, ramp, char_aspect, gamma, invert, margin,
                       int(x1f * im.width), int(y1f * im.height)))
 
     rgb = np.asarray(im)
-    mask = build_mask(rgb)
+    # solid: the image has no removed background (a rendered frame, say),
+    # so every pixel is subject and nothing maps to a space.
+    mask = np.ones(rgb.shape[:2], bool) if solid else build_mask(rgb)
 
     # Crop to the subject so the art is not mostly empty margin.
     rows = np.where(mask.any(axis=1))[0]
@@ -144,6 +147,8 @@ def main():
     p.add_argument("--gamma", type=float, default=1.0,
                    help=">1 darkens midtones, <1 lifts them")
     p.add_argument("--invert", action="store_true")
+    p.add_argument("--solid", action="store_true",
+                   help="treat the whole image as subject (no background to mask)")
     p.add_argument("--no-equalize", action="store_true",
                    help="use a linear percentile stretch instead of equalisation")
     p.add_argument("--margin", type=float, default=0.02)
@@ -159,7 +164,7 @@ def main():
     art = to_ascii(a.image, a.width, a.ramp, a.char_aspect, a.gamma,
                    a.invert, a.margin, a.keep_top, not a.no_equalize,
                    tuple(float(v) for v in a.crop.split(',')) if a.crop else None,
-                   a.sharpen, a.radius)
+                   a.sharpen, a.radius, a.solid)
     sys.stdout.write(art + "\n")
 
 
