@@ -967,3 +967,119 @@ body.is-locked { overflow: hidden; }
   color: var(--c-ink-faint);
   white-space: pre-wrap;
 }
+
+/* --- VM exit demo -------------------------------------------------------- */
+.vx {
+  margin-top: var(--space-8);
+  padding: var(--space-6);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-md);
+  background: var(--c-bg);
+}
+
+.vx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.vx-pick > span {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.vx-pick select {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--c-ink);
+  background: var(--c-surface);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+}
+
+/* Two columns, and the only state that matters is which one is lit: that
+   is the whole mechanism. */
+.vx-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.vx-col {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+  opacity: 0.45;
+  transition: opacity var(--dur-med) var(--ease-out),
+              border-color var(--dur-med) var(--ease-out);
+}
+
+.vx-col.is-active {
+  opacity: 1;
+  border-color: var(--c-accent-dim);
+}
+
+.vx-h {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--track-wide);
+  color: var(--c-ink-muted);
+}
+
+.vx-prog {
+  margin: 0;
+  padding-left: 1.6em;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.8;
+  color: var(--c-ink-faint);
+}
+
+.vx-line.is-past { color: var(--c-ink-muted); }
+.vx-line.is-pc { color: var(--c-accent); }
+
+.vx-struct {
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid var(--c-rule);
+  min-height: 5.6em;
+}
+
+.vx-idle { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--c-ink-faint); }
+
+/* The field the guest is about to read, before the monitor has filled it. */
+.vx-pending { color: var(--c-accent); }
+
+.vx-out, .vx-log {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.vx-out { color: var(--c-ink); min-height: 2.4em; }
+.vx-log { color: var(--c-ink-faint); min-height: 7em; margin-top: var(--space-4); }
+
+.vx-guest { color: var(--c-ink-muted); }
+.vx-monitor { color: var(--c-accent-dim); }
+
+@media (max-width: 680px) {
+  .vx-cols { grid-template-columns: 1fr; }
+}
+
+/* The counters sit under the request, separated from it by the rule above. */
+.vx-facts { min-width: 0; }

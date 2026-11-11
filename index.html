@@ -606,6 +606,7 @@
         </p>
 
         <div class="overlay__actions">
+          <button class="btn btn--accent" type="button" data-overlay="demo-kvm">Run the demo</button>
           <div class="link-row"><a href="https://github.com/Dawidzard/kvm-vmm">Repository</a></div>
         </div>
   </template>
@@ -852,6 +853,76 @@ loop: add r1, r2
     </p>
   </template>
 
+
+  <template id="tpl-demo-kvm">
+    <p class="eyebrow">Interactive &nbsp;/&nbsp; Guest &middot; exit &middot; monitor</p>
+    <h3 id="ov-title">Where the processor actually is</h3>
+    <p class="project__meta">
+      The phase-B guest program, stepped one exit at a time. Its behaviour, not
+      its code.
+    </p>
+    <p>
+      A hypervisor built this way does almost nothing: the hardware runs the guest
+      at full speed, and the monitor only wakes up when the guest does something it
+      is not allowed to finish alone. Watch which column holds the processor, and
+      watch the counter &mdash; <strong>the guest gets through hundreds of
+      instructions for every exit it takes</strong>.
+    </p>
+
+    <div class="vx">
+      <div class="vx-bar">
+        <label class="vx-pick">
+          <span>virtual machine</span>
+          <select data-vx-vm>
+            <option value="0">VM 0</option>
+            <option value="1">VM 1</option>
+          </select>
+        </label>
+        <div class="sc-buttons">
+          <button class="btn" type="button" data-vx="step">step</button>
+          <button class="btn" type="button" data-vx="run">run</button>
+          <button class="btn" type="button" data-vx="reset">reset</button>
+        </div>
+      </div>
+
+      <div class="vx-cols">
+        <div class="vx-col" data-vx-guest>
+          <p class="vx-h">guest</p>
+          <ol class="vx-prog" data-vx-prog></ol>
+        </div>
+        <div class="vx-col" data-vx-monitor>
+          <p class="vx-h">monitor</p>
+          <div class="vx-struct" data-vx-struct></div>
+          <div class="vx-facts" data-vx-facts></div>
+        </div>
+      </div>
+
+      <p class="vx-h">guest output</p>
+      <pre class="vx-out" data-vx-out></pre>
+      <pre class="vx-log" data-vx-log></pre>
+    </div>
+
+    <h4>Two details worth catching</h4>
+    <p>
+      Switch to <strong>VM 1</strong> and open the file again. The guest asks for
+      <code>test.txt</code> both times, but the monitor prefixes the name per
+      machine &mdash; <code>vm0_test.txt</code> and <code>vm1_test.txt</code> &mdash;
+      so two guests running the same image cannot tread on each other.
+    </p>
+    <p>
+      And watch <code>ret</code> in the request. The guest builds that structure on
+      its own stack and passes its address through an <code>outl</code>. Because
+      <code>OUT</code> is synchronous, by the time the instruction retires the
+      monitor has already read the request out of guest memory, serviced it against
+      the host filesystem, and written the answer back into the same structure. The
+      guest never waits for anything; it just reads the field.
+    </p>
+
+    <div class="overlay__actions">
+      <div class="link-row"><a href="https://github.com/Dawidzard/kvm-vmm">Repository</a></div>
+    </div>
+  </template>
+
   <template id="tpl-cv">
     <article class="wiki">
 
@@ -1027,5 +1098,7 @@ loop: add r1, r2
   <script src="scripts/galaxydemo.js" defer></script>
   <script src="scripts/scheduler.js" defer></script>
   <script src="scripts/scheduler-ui.js" defer></script>
+  <script src="scripts/vmexit.js" defer></script>
+  <script src="scripts/vmexit-ui.js" defer></script>
 </body>
 </html>
