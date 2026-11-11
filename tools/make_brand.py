@@ -230,6 +230,15 @@ TARGETS = {
                       text_x=0, text_y=-10_000,   # the panel carries its own type
                       title="", sub=""),
 
+    # 1280x320, for the README of the repository named after the account --
+    # GitHub has no profile banner of its own, and that README is what it
+    # renders at the top of a profile.
+    "gh-banner": dict(kind="art_banner", size=(1280, 320), safe=(0, 0, 1280, 320),
+                      art="andromeda.txt", colour=mix(FAINT, MUTED, 0.78),
+                      art_box=(190, 0, 520, 320),
+                      text_x=790, text_y=126, title="David Marković", title_px=40,
+                      sub="SOFTWARE ENGINEERING  /  ETF BELGRADE"),
+
     # 1584x396. The profile photo covers the bottom-left, so the caption
     # sits right of centre.
     "li-banner": dict(kind="art_banner", size=(1584, 396), safe=(0, 0, 1584, 396),
