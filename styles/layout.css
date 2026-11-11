@@ -137,7 +137,7 @@
    counts: rstrip drops empty trailing columns, so 'width 100' can emit 98.
    tests/guards.test.js fails if these drift apart. */
 .ascii--portrait { font-size: calc(100cqw / 58.8); }
-.ascii--portrait-sm { display: none; font-size: calc(100cqw / 37.8); }
+.ascii--portrait-sm { display: none; font-size: calc(100cqw / 36); }
 
 @media (max-width: 860px) {
   .hero__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }

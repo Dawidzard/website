@@ -12,8 +12,8 @@ import pathlib
 
 from PIL import Image, ImageDraw, ImageFont
 
-BG = (0x16, 0x12, 0x10)      # --c-bg
-INK = (0xA4, 0x92, 0x7F)     # --c-ascii  (the muted coffee step)
+BG = (0x24, 0x1a, 0x14)      # --c-bg
+INK = (0xB3, 0x9E, 0x89)     # --c-ascii  (the muted coffee step)
 MONO = "assets/fonts/JetBrainsMono-Regular.ttf"   # the font the site actually draws with
 
 
