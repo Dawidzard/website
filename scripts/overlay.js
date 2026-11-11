@@ -37,6 +37,11 @@
   let opener = null;
   let timer = null;
   let offset = 0;
+  // Open-state is tracked here rather than read back off the DOM. Reading
+  // it from the element means a styling mistake can convince the close
+  // handler that the dialog is already shut while the user is looking at
+  // it -- which is precisely how this became unclosable once.
+  let isOpen = false;
 
   /* --- The marching frame ------------------------------------------------ */
 
@@ -110,6 +115,8 @@
     const tpl = document.getElementById(`tpl-${key}`);
     if (!tpl) return;
 
+    if (isOpen) close();
+    isOpen = true;
     opener = trigger || null;
     content.replaceChildren(tpl.content.cloneNode(true));
     content.scrollTop = 0;
@@ -130,7 +137,8 @@
   }
 
   function close() {
-    if (overlay.hidden) return;
+    if (!isOpen) return;
+    isOpen = false;
     stopBorder();
     overlay.hidden = true;
     document.body.classList.remove('is-locked');

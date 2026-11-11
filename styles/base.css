@@ -36,6 +36,14 @@ img, svg, video {
   height: auto;
 }
 
+/* The `hidden` attribute is only honoured by the browser's own stylesheet,
+   so ANY author rule that sets `display` defeats it -- and the element stays
+   on screen with no way to dismiss it. This cost us exactly that: .overlay
+   sets `display: grid`, so the dialog was visible from page load and its
+   close handler bailed out early because the attribute really was set.
+   Make the attribute win. */
+[hidden] { display: none !important; }
+
 /* --- Headings ------------------------------------------------------------- */
 
 h1, h2, h3, h4 {
