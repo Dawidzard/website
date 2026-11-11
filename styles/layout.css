@@ -177,3 +177,14 @@
   font-family: var(--font-mono);
   font-size: var(--text-xs);
 }
+
+/* While the drawing is still condensing out of noise it sits at the dim step;
+   removing .is-forming transitions it up to full strength, which gives the
+   reveal a brightness arc for the cost of one CSS transition. */
+.ascii {
+  transition: color var(--dur-slow) var(--ease-out);
+}
+
+.ascii.is-forming {
+  color: var(--c-ascii-dim);
+}
