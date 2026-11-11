@@ -564,3 +564,95 @@ body.is-locked { overflow: hidden; }
   padding: 1px var(--space-2);
   white-space: nowrap;
 }
+
+/* --- Arm Control Panel ---------------------------------------------------
+   A 64x64 frame blown up. image-rendering:pixelated is essential: the
+   default smoothing would interpolate away the few pixels of gripper
+   displacement that the whole demo exists to show. */
+.demo {
+  margin-top: var(--space-8);
+  padding: var(--space-8);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-md);
+  background: var(--c-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.demo__screen {
+  padding: var(--space-2);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  background: var(--c-bg-deep);
+  line-height: 0;
+}
+
+.demo__screen canvas {
+  width: 288px;
+  height: 288px;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
+/* --- D-pad ----------------------------------------------------------------
+   Characters rather than glyph arrows, to stay in the same alphabet as the
+   rest of the site. */
+.demo__pad {
+  display: grid;
+  grid-template-columns: repeat(3, 2.6rem);
+  gap: var(--space-2);
+}
+
+.demo__key {
+  aspect-ratio: 1;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  color: var(--c-ink-muted);
+  background: var(--c-surface);
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
+}
+
+.demo__key:hover { color: var(--c-accent); border-color: var(--c-accent-dim); }
+.demo__key.is-on { color: var(--c-accent); border-color: var(--c-accent); }
+
+/* --- Scenes and status ---------------------------------------------------- */
+.demo__strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.demo__chip {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--c-ink-muted);
+  background: transparent;
+  border: 1px solid var(--c-rule);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+}
+
+.demo__chip:hover { color: var(--c-accent); }
+.demo__chip.is-on { color: var(--c-accent); border-color: var(--c-accent); }
+
+.demo__status {
+  margin: 0;
+  min-height: 1.4em;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-align: center;
+  color: var(--c-ink-muted);
+}
+
+.demo__branch { color: var(--c-accent); }
+
+/* The free-rollout caveat has to be legible as a caveat, not decoration. */
+.demo__warn { color: var(--c-ink); }

@@ -37,6 +37,10 @@
   }
   </script>
 
+  <!-- Frame index for the demo. Inlined because fetch() cannot read a
+       file:// URL, and this page is opened off disk as often as served. -->
+  <script type="application/json" id="armdemo-manifest">{"tile":64,"cols":16,"ext":"webp","scenes":{"3":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157},"51":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157},"108":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157},"204":{"context":[0,13],"anchored":{"up":[13,16],"down":[29,16],"left":[45,16],"right":[61,16],"still":[77,16]},"chain":[{"action":"up","range":[93,16]},{"action":"down","range":[109,16]},{"action":"left","range":[125,16]},{"action":"right","range":[141,16]}],"count":157}}}</script>
+
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/layout.css">
@@ -476,7 +480,7 @@
         </p>
 
         <div class="overlay__actions">
-          <button class="btn" type="button" data-open-demo disabled>Run the demo&nbsp; (soon)</button>
+          <button class="btn btn--accent" type="button" data-overlay="demo">Run the demo</button>
           <div class="link-row"><a href="https://github.com/MihStev/PSIML">Repository</a></div>
         </div>
   </template>
@@ -672,6 +676,53 @@
     </div>
   </template>
 
+
+  <template id="tpl-demo">
+    <p class="eyebrow">Interactive &nbsp;/&nbsp; Action-conditioned prediction</p>
+    <h3 id="ov-title">Arm Control Panel</h3>
+    <p class="project__meta">
+      Wan2.1-T2V-1.3B + LoRA rank 16 &nbsp;·&nbsp; BAIR robot pushing
+      &nbsp;·&nbsp; 64&times;64 &nbsp;·&nbsp; held-out scenes
+    </p>
+    <p>
+      Press a direction. Every button branches from the <strong>same real context
+      with the same noise</strong>, so the only thing that differs between them is
+      the commanded action. Arrow keys work too.
+    </p>
+
+    <div class="demo">
+      <div class="demo__screen">
+        <canvas data-demo-canvas width="64" height="64"
+                aria-label="Frames predicted by the world model"></canvas>
+      </div>
+
+      <div class="demo__pad">
+        <span></span>
+        <button class="demo__key" type="button" data-action="up" aria-label="up">^</button>
+        <span></span>
+        <button class="demo__key" type="button" data-action="left" aria-label="left">&lt;</button>
+        <button class="demo__key" type="button" data-action="still" aria-label="hold">o</button>
+        <button class="demo__key" type="button" data-action="right" aria-label="right">&gt;</button>
+        <span></span>
+        <button class="demo__key" type="button" data-action="down" aria-label="down">v</button>
+        <span></span>
+      </div>
+
+      <div class="demo__strip" data-demo-scenes></div>
+      <button class="btn" type="button" data-demo-chain>play free rollout</button>
+      <p class="demo__status" data-demo-status>loading&hellip;</p>
+    </div>
+
+    <p class="project__meta">
+      An arrow <strong>branches</strong> from the real context &mdash; it is not a
+      continuation, which is exactly why any difference between two arrows can only
+      have come from the action. <strong>Free rollout</strong> is the one that
+      continues: each generated block becomes the next block&rsquo;s context. It is
+      shown rather than hidden, because what degrades there is the arm&rsquo;s
+      absolute position and the image quality, not its obedience.
+    </p>
+  </template>
+
   <template id="tpl-cv">
     <article class="wiki">
 
@@ -846,5 +897,6 @@
 
   <script src="scripts/ascii-reveal.js" defer></script>
   <script src="scripts/overlay.js" defer></script>
+  <script src="scripts/armdemo.js" defer></script>
 </body>
 </html>

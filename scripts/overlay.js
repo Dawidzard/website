@@ -129,6 +129,11 @@
       // Figures cloned out of the template were never in the document when
       // the reveal script ran, so they have to be attached by hand.
       if (window.AsciiReveal) window.AsciiReveal.attach(content);
+      // Announce what is now on screen. Modules that drive a particular
+      // panel listen for this rather than being wired in here, so this file
+      // stays unaware of them.
+      document.dispatchEvent(new CustomEvent('overlay:open',
+        { detail: { key, content } }));
     });
 
     closeBtn.focus();
@@ -145,6 +150,7 @@
     content.replaceChildren();
     document.removeEventListener('keydown', onKey);
     window.removeEventListener('resize', drawBorder);
+    document.dispatchEvent(new CustomEvent('overlay:close'));
     if (opener) opener.focus();
     opener = null;
   }
